@@ -7,16 +7,16 @@ import { tipoGastoService } from "../services/tipoGastoService";
 import type { Gasto } from "../interfaces/gasto";
 import type { PresupuestoMes } from "../interfaces/finanzas";
 import type { TipoGasto, ClaseTipoGasto } from "../interfaces/tipoGasto";
-import { formatMoney, formatDateTime, colorParaCategoria, MESES } from "../utils/format";
+import { formatMoney, formatDateTime, asignarColores, MESES } from "../utils/format";
+import { CLASES_LABEL, claveMes } from "../utils/estadisticas";
+import EvolucionGastos from "../components/EvolucionGastos";
+import ResumenMeses from "../components/ResumenMeses";
+import PieChart from "../components/charts/PieChart";
 
 function fechaAMesInput(fecha: Date): string {
   const anio = fecha.getFullYear();
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
   return `${anio}-${mes}`;
-}
-
-function claveMes(anio: number, mesIndex: number): string {
-  return `${anio}-${String(mesIndex + 1).padStart(2, "0")}`;
 }
 
 // Busca, dentro de la lista de presupuestos, el registro EXACTO de un mes en
@@ -32,13 +32,6 @@ function buscarPresupuestoDeMes(
   return lista.find((p) => p.mes.slice(0, 7) === clave);
 }
 
-const CLASES_LABEL: Record<string, string> = {
-  vital: "Vital",
-  entretenimiento: "Entretenimiento",
-  varios: "Varios",
-  sin_clase: "Sin clase",
-};
-
 export default function Estadisticas() {
   const { usuario } = useAuth();
   const { mostrarToast } = useToast();
@@ -53,7 +46,10 @@ export default function Estadisticas() {
   const [presupuestoGastos, setPresupuestoGastos] = useState("");
   const [guardando, setGuardando] = useState(false);
 
-  const [fechaActual, setFechaActual] = useState(new Date());
+  const [fechaActual, setFechaActual] = useState(() => {
+    const hoy = new Date();
+    return new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  });
 
   const [modoDistribucion, setModoDistribucion] = useState<"categoria" | "clase">("categoria");
   const [detalleAbierto, setDetalleAbierto] = useState<string | null>(null);
@@ -129,9 +125,7 @@ export default function Estadisticas() {
     balanceDineroVsPresupuestoFormulario !== null && balanceDineroVsPresupuestoFormulario < 0;
 
   function cambiarMes(direccion: number) {
-    const nueva = new Date(fechaActual);
-    nueva.setMonth(nueva.getMonth() + direccion);
-    setFechaActual(nueva);
+    setFechaActual(new Date(fechaActual.getFullYear(), fechaActual.getMonth() + direccion, 1));
     setDetalleAbierto(null);
   }
 
@@ -179,36 +173,10 @@ export default function Estadisticas() {
     agrupado[clave].gastos.push(g);
   });
   const gruposOrdenados = Object.entries(agrupado).sort((a, b) => b[1].total - a[1].total);
+  const colores = asignarColores(gruposOrdenados.map(([clave]) => clave));
 
   function etiquetaGrupo(clave: string): string {
     return modoDistribucion === "clase" ? CLASES_LABEL[clave] ?? clave : clave;
-  }
-
-  // ============ RESUMEN DEL MES ANTERIOR ============
-  const mesAnteriorPresupuesto = presupuestos[1];
-  let nombreMesAnterior = "";
-  let pagadoMesAnterior = 0;
-  let ahorroMesAnterior: number | null = null;
-
-  if (mesAnteriorPresupuesto) {
-    const [anioAnteriorStr, mesAnteriorStr] = mesAnteriorPresupuesto.mes.slice(0, 7).split("-");
-    const anioAnterior = Number(anioAnteriorStr);
-    const mesAnteriorIndex = Number(mesAnteriorStr) - 1;
-
-    nombreMesAnterior = `${MESES[mesAnteriorIndex]} ${anioAnterior}`;
-
-    pagadoMesAnterior = gastos
-      .filter((g) => {
-        const f = new Date(g.fecha_vencimiento);
-        return (
-          f.getMonth() === mesAnteriorIndex &&
-          f.getFullYear() === anioAnterior &&
-          g.estado === "pagado"
-        );
-      })
-      .reduce((a, g) => a + g.precio, 0);
-
-    ahorroMesAnterior = mesAnteriorPresupuesto.presupuesto_gastos - pagadoMesAnterior;
   }
 
   return (
@@ -285,61 +253,16 @@ export default function Estadisticas() {
           )}
         </article>
 
-        <article className="finanzas-card">
-          <div className="finanzas-card-header">
-            <span className="finanzas-icon">📈</span>
-            <div>
-              <h3>{mesAnteriorPresupuesto ? `Resumen de ${nombreMesAnterior}` : "Resumen del mes anterior"}</h3>
-              <p>Comparativa entre lo presupuestado y lo que pagaste ese mes.</p>
-            </div>
-          </div>
-
-          {!mesAnteriorPresupuesto ? (
-            <p style={{ color: "var(--gray-400)", fontSize: "0.85rem" }}>
-              Todavía no has guardado un presupuesto para ningún mes anterior. Usa el selector de
-              "Mes" de la tarjeta de la izquierda para guardarlo.
-            </p>
-          ) : (
-            <>
-              <div className="ahorro-grid">
-                <div className="ahorro-item">
-                  <span className="ahorro-label">Presupuesto</span>
-                  <span className="ahorro-value">
-                    {formatMoney(mesAnteriorPresupuesto.presupuesto_gastos)}
-                  </span>
-                </div>
-                <div className="ahorro-item">
-                  <span className="ahorro-label">Pagado</span>
-                  <span className="ahorro-value red">{formatMoney(pagadoMesAnterior)}</span>
-                </div>
-                <div className="ahorro-item ahorro-item-destacado">
-                  <span className="ahorro-label">
-                    {ahorroMesAnterior !== null && ahorroMesAnterior >= 0
-                      ? "Ahorraste"
-                      : "Te excediste"}
-                  </span>
-                  <span
-                    className={`ahorro-value ${
-                      ahorroMesAnterior !== null && ahorroMesAnterior >= 0 ? "green" : "red"
-                    }`}
-                  >
-                    {formatMoney(Math.abs(ahorroMesAnterior ?? 0))}
-                  </span>
-                </div>
-              </div>
-              <div
-                className={`ahorro-mensaje ${
-                  ahorroMesAnterior !== null && ahorroMesAnterior >= 0 ? "positivo" : "negativo"
-                }`}
-              >
-                {ahorroMesAnterior !== null && ahorroMesAnterior >= 0
-                  ? `🎉 ¡Buen trabajo! En ${nombreMesAnterior} ahorraste ${formatMoney(ahorroMesAnterior)}.`
-                  : `😟 En ${nombreMesAnterior} te excediste por ${formatMoney(Math.abs(ahorroMesAnterior ?? 0))}.`}
-              </div>
-            </>
-          )}
-        </article>
+        <ResumenMeses gastos={gastos} presupuestos={presupuestos} fechaFin={fechaActual} />
       </section>
+
+      <EvolucionGastos
+        gastos={gastos}
+        presupuestos={presupuestos}
+        fechaFin={fechaActual}
+        claseDeCategoria={claseDeCategoria}
+        cargando={cargando}
+      />
 
       <nav className="month-nav" aria-label="Navegación de meses">
         <button onClick={() => cambiarMes(-1)}>← Anterior</button>
@@ -425,66 +348,83 @@ export default function Estadisticas() {
             Sin datos para este mes.
           </p>
         ) : (
-          gruposOrdenados.map(([clave, info]) => {
-            const pct = totalMes > 0 ? Math.round((info.total / totalMes) * 100) : 0;
-            const abierto = detalleAbierto === clave;
-            return (
-              <div className="bar-item" key={clave}>
-                <div className="bar-label">
-                  <span>{etiquetaGrupo(clave)}</span>
-                  <span>
-                    {formatMoney(info.total)} ({pct}%)
-                  </span>
-                </div>
-                <div className="bar-track">
-                  <div
-                    className="bar-fill"
-                    style={{ width: `${pct}%`, background: colorParaCategoria(clave) }}
-                  />
-                </div>
-                <span
-                  className="forgot-link"
-                  style={{
-                    display: "inline-block",
-                    marginTop: 6,
-                    fontSize: "0.78rem",
-                    color: "var(--blue-mid)",
-                  }}
-                  onClick={() => setDetalleAbierto(abierto ? null : clave)}
-                >
-                  {abierto ? "Ocultar detalles ▲" : "Ver detalles ▼"}
-                </span>
-
-                {abierto && (
-                  <div
-                    style={{
-                      background: "var(--gray-50)",
-                      borderRadius: "var(--radius-sm)",
-                      padding: "8px 12px",
-                      marginTop: 6,
-                      marginBottom: 8,
-                    }}
-                  >
-                    {info.gastos.map((g) => (
+          <div className="distribucion-grid">
+            <div className="distribucion-barras">
+              {gruposOrdenados.map(([clave, info]) => {
+                const pct = totalMes > 0 ? Math.round((info.total / totalMes) * 100) : 0;
+                const abierto = detalleAbierto === clave;
+                return (
+                  <div className="bar-item" key={clave}>
+                    <div className="bar-label">
+                      <span>{etiquetaGrupo(clave)}</span>
+                      <span>
+                        {formatMoney(info.total)} ({pct}%)
+                      </span>
+                    </div>
+                    <div className="bar-track">
                       <div
-                        key={g.id_gasto}
-                        className="total-row"
-                        style={{ padding: "8px 0" }}
+                        className="bar-fill"
+                        style={{ width: `${pct}%`, background: colores[clave] }}
+                      />
+                    </div>
+                    <span
+                      className="forgot-link"
+                      style={{
+                        display: "inline-block",
+                        marginTop: 6,
+                        fontSize: "0.78rem",
+                        color: "var(--blue-mid)",
+                      }}
+                      onClick={() => setDetalleAbierto(abierto ? null : clave)}
+                    >
+                      {abierto ? "Ocultar detalles ▲" : "Ver detalles ▼"}
+                    </span>
+
+                    {abierto && (
+                      <div
+                        style={{
+                          background: "var(--gray-50)",
+                          borderRadius: "var(--radius-sm)",
+                          padding: "8px 12px",
+                          marginTop: 6,
+                          marginBottom: 8,
+                        }}
                       >
-                        <span className="label">
-                          {modoDistribucion === "clase" ? `${g.categoria} — ` : ""}
-                          {formatDateTime(g.fecha_vencimiento)} ({g.estado})
-                        </span>
-                        <span className="value" style={{ fontSize: "0.9rem" }}>
-                          {formatMoney(g.precio)}
-                        </span>
+                        {info.gastos.map((g) => (
+                          <div
+                            key={g.id_gasto}
+                            className="total-row"
+                            style={{ padding: "8px 0" }}
+                          >
+                            <span className="label">
+                              {modoDistribucion === "clase" ? `${g.categoria} — ` : ""}
+                              {formatDateTime(g.fecha_vencimiento)} ({g.estado})
+                            </span>
+                            <span className="value" style={{ fontSize: "0.9rem" }}>
+                              {formatMoney(g.precio)}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })
+                );
+              })}
+            </div>
+            <aside className="distribucion-pie" aria-label="Gráfica de torta">
+              <h3 className="chart-title">
+                Participación por {modoDistribucion === "clase" ? "clase" : "categoría"}
+              </h3>
+              <PieChart
+                datos={gruposOrdenados.map(([clave, info]) => ({
+                  clave,
+                  etiqueta: etiquetaGrupo(clave),
+                  valor: info.total,
+                  color: colores[clave],
+                }))}
+              />
+            </aside>
+          </div>
         )}
       </section>
     </>
