@@ -59,6 +59,24 @@ export function colorParaCategoria(nombre: string): string {
   return PALETA_COLORES[index];
 }
 
+// Asigna un color distinto a cada clave de una misma gráfica. Parte del color
+// determinístico de colorParaCategoria() y, si dos claves chocan (la paleta
+// solo tiene 8 colores), toma el siguiente color libre.
+export function asignarColores(claves: string[]): Record<string, string> {
+  const asignados: Record<string, string> = {};
+  const usados = new Set<string>();
+  claves.forEach((clave) => {
+    let color = colorParaCategoria(clave);
+    if (usados.has(color)) {
+      const libre = PALETA_COLORES.find((c) => !usados.has(c));
+      if (libre) color = libre;
+    }
+    usados.add(color);
+    asignados[clave] = color;
+  });
+  return asignados;
+}
+
 export const MESES = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
