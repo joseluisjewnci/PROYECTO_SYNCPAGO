@@ -17,6 +17,8 @@ import {
 import EstadoBadge from "../components/EstadoBadge";
 import GastoFormModal from "../components/GastoFormModal";
 import Pagination from "../components/Pagination";
+import FiltroMeses from "../components/FiltroMeses";
+import { claveDeFecha, etiquetaDeClave } from "../utils/estadisticas";
 
 const PAGE_SIZE = 8;
 
@@ -34,6 +36,7 @@ export default function Gastos() {
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>("todos");
+  const [mesesSeleccionados, setMesesSeleccionados] = useState<string[]>([]); // vacío = todos
   const [pagina, setPagina] = useState(1);
 
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -46,11 +49,25 @@ export default function Gastos() {
 
   // Soporta abrir el modal desde fuera de esta página (botón "Agregar
   // Gasto" de la sidebar) navegando a /gastos?nuevo=1
+  // También soporta los filtros que arma el buscador global de la barra
+  // superior: /gastos?q=categoría, /gastos?estado=pendiente|vencido|pagado y
+  // /gastos?mes=AAAA-MM. Cada uno parte de la lista limpia.
   useEffect(() => {
-    if (searchParams.get("nuevo") === "1") {
-      abrirNuevo();
-      setSearchParams({}, { replace: true });
+    const nuevo = searchParams.get("nuevo") === "1";
+    const q = searchParams.get("q");
+    const estado = searchParams.get("estado");
+    const mes = searchParams.get("mes");
+    const hayFiltro = q !== null || estado !== null || mes !== null;
+    if (nuevo) abrirNuevo();
+    if (hayFiltro) {
+      setBusqueda(q ?? "");
+      setFiltroEstado(
+        estado === "pendiente" || estado === "vencido" || estado === "pagado" ? estado : "todos"
+      );
+      setMesesSeleccionados(mes && /^\d{4}-\d{2}$/.test(mes) ? [mes] : []);
+      setPagina(1);
     }
+    if (nuevo || hayFiltro) setSearchParams({}, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -82,11 +99,31 @@ export default function Gastos() {
   // y tampoco cuentan en estadísticas ni en el presupuesto disponible.
   const activos = gastos.filter((g) => g.estado !== "cancelado");
 
-  const filtrados = activos.filter((g) => {
-    const coincideBusqueda = g.categoria.toLowerCase().includes(busqueda.toLowerCase());
-    const coincideEstado = filtroEstado === "todos" || g.estado === filtroEstado;
-    return coincideBusqueda && coincideEstado;
-  });
+  // Meses del filtro (del más reciente al más antiguo): los que tienen gastos
+  // más los que el usuario eligió, para que un mes sin gastos muestre la tabla
+  // vacía en lugar de mostrar todos los meses.
+  const clavesMes = new Set(activos.map((g) => claveDeFecha(g.fecha_vencimiento)));
+  mesesSeleccionados.forEach((c) => clavesMes.add(c));
+  const opcionesMes = Array.from(clavesMes)
+    .sort()
+    .reverse()
+    .map((clave) => ({ clave, etiqueta: etiquetaDeClave(clave) }));
+
+  // Siempre del más reciente al más antiguo según la fecha de vencimiento.
+  const filtrados = activos
+    .filter((g) => {
+      const coincideBusqueda = g.categoria.toLowerCase().includes(busqueda.toLowerCase());
+      const coincideEstado = filtroEstado === "todos" || g.estado === filtroEstado;
+      const coincideMes =
+        mesesSeleccionados.length === 0 ||
+        mesesSeleccionados.includes(claveDeFecha(g.fecha_vencimiento));
+      return coincideBusqueda && coincideEstado && coincideMes;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.fecha_vencimiento).getTime() - new Date(a.fecha_vencimiento).getTime() ||
+        b.id_gasto - a.id_gasto
+    );
 
   const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGE_SIZE));
   const paginaSegura = Math.min(pagina, totalPaginas);
@@ -182,6 +219,14 @@ export default function Gastos() {
         >
           Pagados
         </button>
+        <FiltroMeses
+          opciones={opcionesMes}
+          seleccion={mesesSeleccionados}
+          onChange={(sel) => {
+            setMesesSeleccionados(sel);
+            setPagina(1);
+          }}
+        />
         <div className="search-input-wrap">
           <span className="search-icon">🔍</span>
           <input
