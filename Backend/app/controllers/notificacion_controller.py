@@ -17,7 +17,7 @@ from app.utils.auditoria import registrar_evento
 from app.utils.cifrado import cifrar_texto, descifrar_texto
 from app.utils.rate_limit import marcar_usado, registrar_intento
 from app.utils.telegram_api import TelegramBloqueado, enviar_mensaje
-from app.utils.telegram_vinculo import crear_codigo_vinculo, firma_valida, leer_codigo_vinculo
+from app.utils.telegram_vinculo import crear_codigo_telefono, crear_codigo_vinculo, firma_valida, leer_codigo_vinculo, recordar_chat_telefono  # MODIFICADO - TELEGRAM
 from app.utils.tokens import crear_token, generar_jti, validar_token
 
 CLASES_VALIDAS = ("vital", "entretenimiento", "varios")
@@ -149,9 +149,10 @@ def procesar_contacto_telegram(db: Session, chat_id: int, telefono: str) -> Tupl
         return "No pude leer un número de teléfono válido.", None
     fila = db.execute(text("SELECT id_usuario, telefono FROM usuarios WHERE telegram_chat_id = :chat LIMIT 1;"), {"chat": chat_id}).fetchone()
     if not fila:
-        # Registro en curso: el token firmado liga ese número con esta cuenta de Telegram
-        token = crear_token("verificar_telegram", {"telefono": telefono, "chat_id": chat_id}, minutos=VINCULO_TELEGRAM_MINUTOS)
-        return "Número comprobado. Copia este token y pégalo en SYNCPAGO (vale " + str(VINCULO_TELEGRAM_MINUTOS) + " minutos):", token
+        # Registro en curso: se entrega un código corto de 8 caracteres (ya no un token largo)  # MODIFICADO - TELEGRAM
+        recordar_chat_telefono(telefono, chat_id)  # MODIFICADO - TELEGRAM
+        token = crear_codigo_telefono(telefono)  # MODIFICADO - TELEGRAM
+        return "Número comprobado. Copia este código de 8 caracteres y pégalo en SYNCPAGO (vale unos " + str(VINCULO_TELEGRAM_MINUTOS) + " minutos):", token  # MODIFICADO - TELEGRAM
     usuario = dict(fila._mapping)
     if usuario["telefono"] and _ultimos_10(usuario["telefono"]) != telefono:
         return "Ese número no coincide con el teléfono de tu cuenta de SYNCPAGO.", None

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.config.settings import ACCESS_TOKEN_MINUTOS, BLOQUEO_MINUTOS, CODIGO_MAX_INTENTOS, CODIGO_MINUTOS, MAX_INTENTOS_LOGIN, SECRET_KEY, SESION_MAXIMA_HORAS
 from app.utils.email_service import enviar_correo, plantilla_codigo
 from app.utils.rate_limit import permitir, liberar, registrar_intento, marcar_usado
+from app.utils.telegram_vinculo import chat_de_telefono, codigo_telefono_valido  # CREADA - TELEGRAM
 from app.utils.tokens import crear_token, validar_token, generar_codigo, generar_jti, huella_codigo, codigo_coincide
 from app.config.settings import TELEGRAM_BOT_USUARIO
 from app.controllers.notificacion_controller import telegram_disponible
@@ -261,12 +262,13 @@ def confirmar_registro(db: Session, token_pendiente: str, codigo: str, token_tel
     # Si dio teléfono, el token que entregó el bot debe ser de ESE número. Se revisa antes de gastar el código:
     # así, si falta o está mal, la persona puede corregirlo sin pedir otro código.
     chat_id = None
+    telefono_comprobado = False  # MODIFICADO - TELEGRAM
     if pendiente.get("telefono") and telegram_disponible():
-        datos_tg = validar_token(token_telegram, "verificar_telegram")
-        if not datos_tg or datos_tg.get("telefono") != pendiente["telefono"] or not datos_tg.get("chat_id"):
-            raise ErrorVerificacion("Falta el token de Telegram o no corresponde a tu teléfono. Abre el bot, comparte tu número y pega el token.", "TELEGRAM_TOKEN_INVALID", 400)
-        chat_id = int(datos_tg["chat_id"])
-        if db.execute(text("SELECT 1 FROM usuarios WHERE telegram_chat_id = :chat LIMIT 1;"), {"chat": chat_id}).fetchone():
+        if not codigo_telefono_valido(pendiente["telefono"], token_telegram):  # MODIFICADO - TELEGRAM
+            raise ErrorVerificacion("Falta el código de Telegram o no corresponde a tu teléfono. Abre el bot, comparte tu número y pega el código de 8 caracteres.", "TELEGRAM_TOKEN_INVALID", 400)  # MODIFICADO - TELEGRAM
+        telefono_comprobado = True  # MODIFICADO - TELEGRAM
+        chat_id = chat_de_telefono(pendiente["telefono"])  # MODIFICADO - TELEGRAM (puede ser None si el servidor se reinició: el teléfono igual queda verificado)
+        if chat_id and db.execute(text("SELECT 1 FROM usuarios WHERE telegram_chat_id = :chat LIMIT 1;"), {"chat": chat_id}).fetchone():
             raise ErrorVerificacion("Esa cuenta de Telegram ya está vinculada a otro usuario.", "TELEGRAM_ALREADY_LINKED", 400)
     _exigir_un_solo_uso(pendiente["jti"])
     if obtener_usuario_por_correo(db, pendiente["correo"]):
@@ -279,9 +281,9 @@ def confirmar_registro(db: Session, token_pendiente: str, codigo: str, token_tel
         contrasena=pendiente["contrasena"],
         telefono=pendiente.get("telefono"),
     )
-    if chat_id and usuario:
-        # Número comprobado con Telegram: queda verificado y el Telegram vinculado y activo
-        db.execute(text("UPDATE usuarios SET telegram_chat_id = :chat, telegram_activo = TRUE, telefono_verificado = TRUE WHERE id_usuario = :id_usuario;"), {"chat": chat_id, "id_usuario": usuario["id_usuario"]})
+    if telefono_comprobado and usuario:  # MODIFICADO - TELEGRAM
+        # Número comprobado con Telegram: queda verificado y, si se conoce el chat, el Telegram vinculado y activo
+        db.execute(text("UPDATE usuarios SET telegram_chat_id = :chat, telegram_activo = :activo, telefono_verificado = TRUE WHERE id_usuario = :id_usuario;"), {"chat": chat_id, "activo": bool(chat_id), "id_usuario": usuario["id_usuario"]})  # MODIFICADO - TELEGRAM
         db.commit()
         registrar_evento("TELEFONO_VERIFICADO", id_usuario=usuario["id_usuario"], correo=pendiente["correo"], detalle="Verificado con Telegram al registrarse")
     if usuario:
