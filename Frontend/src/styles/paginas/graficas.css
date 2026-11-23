@@ -1,0 +1,149 @@
+/* Estilos de las gráficas de Estadísticas. */
+/* ============ GRÁFICAS (Estadísticas) ============ */
+
+.chart-box { width: 100%; position: relative; }
+.chart-box svg { display: block; max-width: 100%; }
+
+.chart-sub { font-size: 0.82rem; color: var(--gray-500); line-height: 1.4; }
+.chart-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--gray-900);
+  margin-bottom: 10px;
+}
+.chart-caption { font-size: 0.75rem; color: var(--gray-500); margin-top: 6px; }
+
+.evolucion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.evolucion-header h2 { margin-bottom: 4px; }
+.range-toggle { display: flex; gap: 8px; flex-wrap: wrap; }
+.range-toggle .filter-btn { padding: 6px 12px; font-size: 0.8rem; }
+
+.evolucion-insight {
+  border-left: 3px solid var(--blue-mid);
+  background: var(--gray-50);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--gray-700);
+}
+.evolucion-insight strong { color: var(--gray-900); }
+
+.evolucion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.evolucion-col { min-width: 0; }
+
+.cambio-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cambio-head { margin-bottom: 4px; }
+.cambio-head .chart-title { margin-bottom: 0; align-self: center; }
+.cambio-hint { font-size: 0.75rem; color: var(--gray-400); margin: 0 0 8px; }
+.cambio-lista {
+  list-style: none;
+  max-height: 340px;
+  overflow-y: auto;
+  border-top: 1px solid var(--gray-100);
+}
+.cambio-fila { border-bottom: 1px solid var(--gray-100); }
+.cambio-fila-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 6px;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+.cambio-fila-main:hover { background: var(--gray-50); }
+.cambio-fila-main:focus-visible { outline: 2px solid var(--blue-mid); outline-offset: -2px; }
+.cambio-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; align-self: flex-start; margin-top: 5px; }
+.cambio-info { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.cambio-nombre {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--gray-900);
+}
+.cambio-badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.cambio-badge.baja  { background: #dcfce7; color: var(--green-dark); }
+.cambio-badge.sube  { background: #fee2e2; color: #b91c1c; }
+.cambio-badge.igual { background: var(--gray-100); color: var(--gray-500); }
+.cambio-detalle { padding: 2px 6px 12px; }
+
+.distribucion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.distribucion-barras { min-width: 0; }
+.distribucion-pie { min-width: 0; display: flex; flex-direction: column; }
+
+.pie-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.pie-svg { flex: 0 1 210px; width: 210px; max-width: 100%; height: auto; }
+.pie-slice { transition: transform 0.15s ease, opacity 0.15s ease; }
+.pie-legend {
+  list-style: none;
+  flex: 1 1 190px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+}
+.pie-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+.pie-legend li.activo,
+.pie-legend li:focus-visible { background: var(--gray-50); outline: none; }
+.pie-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.pie-nombre {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--gray-700);
+  font-weight: 600;
+}
+.pie-valor { margin-left: auto; padding-left: 8px; white-space: nowrap; font-weight: 700; color: var(--gray-900); }
