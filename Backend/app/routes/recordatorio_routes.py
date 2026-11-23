@@ -1,41 +1,43 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.config.database import get_db
+from app.utils.auth import get_usuario_actual, es_propietario
+from app.controllers.gasto_controller import gasto_es_del_usuario
+from app.controllers.notificacion_controller import programar_sincronizacion_gasto
 from app.controllers.recordatorio_controller import (
     obtener_alertas_recordatorios,
     obtener_recordatorio_por_gasto,
     actualizar_tiempo_antelacion,
     obtener_recordatorios_usuario
 )
-from app.utils.response import response_success, response_error
+from app.utils.response import response_success, response_error, response_error_servidor
 
 router = APIRouter(
     prefix="/recordatorios",
-    tags=["Recordatorios"]
+    tags=["Recordatorios"], 
+    dependencies=[Depends(get_usuario_actual)] 
 )
 
 @router.get("/alertas")
-def listar_alertas(db: Session = Depends(get_db)):
+def listar_alertas(db: Session = Depends(get_db), usuario_actual: dict = Depends(get_usuario_actual)):
     try:
-        alertas = obtener_alertas_recordatorios(db)
+        alertas = obtener_alertas_recordatorios(db, usuario_actual["id_usuario"])
         return response_success(
             mensaje="Alertas de recordatorios obtenidas",
             data=alertas,
             code=200
         )
     except Exception as error:
-        return response_error(
-            mensaje="Error al consultar las alertas",
-            error=str(error),
-            code=500
-        )
+        return response_error_servidor("Error al consultar las alertas", error)
 
 # =========================================================
 # TODOS LOS RECORDATORIOS DE UN USUARIO (una sola petición)
 # =========================================================
 @router.get("/usuario/{id_usuario}")
-def listar_recordatorios_usuario(id_usuario: int, db: Session = Depends(get_db)):
+def listar_recordatorios_usuario(id_usuario: int, db: Session = Depends(get_db), usuario_actual: dict = Depends(get_usuario_actual)):
     try:
+        if not es_propietario(usuario_actual, id_usuario):
+            return response_error(mensaje="No tienes permiso para acceder a los datos de otro usuario", error="FORBIDDEN", code=403)
         recordatorios = obtener_recordatorios_usuario(db, id_usuario)
         return response_success(
             mensaje="Recordatorios del usuario obtenidos con éxito",
@@ -43,15 +45,13 @@ def listar_recordatorios_usuario(id_usuario: int, db: Session = Depends(get_db))
             code=200
         )
     except Exception as error:
-        return response_error(
-            mensaje="Error al consultar los recordatorios del usuario",
-            error=str(error),
-            code=500
-        )
+        return response_error_servidor("Error al consultar los recordatorios del usuario", error)
 
 @router.get("/gasto/{id_gasto}")
-def consultar_recordatorio_gasto(id_gasto: int, db: Session = Depends(get_db)):
+def consultar_recordatorio_gasto(id_gasto: int, db: Session = Depends(get_db), usuario_actual: dict = Depends(get_usuario_actual)):
     try:
+        if not gasto_es_del_usuario(db, id_gasto, usuario_actual["id_usuario"]):
+            return response_error(mensaje="Gasto no encontrado", error="GASTO_NOT_FOUND", code=404)
         recordatorio = obtener_recordatorio_por_gasto(db, id_gasto)
         if not recordatorio:
             return response_error(
@@ -65,19 +65,17 @@ def consultar_recordatorio_gasto(id_gasto: int, db: Session = Depends(get_db)):
             code=200
         )
     except Exception as error:
-        return response_error(
-            mensaje="Error al consultar el recordatorio del gasto",
-            error=str(error),
-            code=500
-        )
+        return response_error_servidor("Error al consultar el recordatorio del gasto", error)
 
 @router.patch("/gasto/{id_gasto}")
 def editar_tiempo_antelacion(
     id_gasto: int,
     tiempo_antelacion: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),usuario_actual: dict = Depends(get_usuario_actual)
 ):
     try:
+        if not gasto_es_del_usuario(db, id_gasto, usuario_actual["id_usuario"]):
+            return response_error(mensaje="Gasto no encontrado", error="GASTO_NOT_FOUND", code=404)
         if tiempo_antelacion <= 0:
             return response_error(
                 mensaje="El tiempo de antelación debe ser mayor a 0 minutos",
@@ -85,6 +83,8 @@ def editar_tiempo_antelacion(
                 code=422
             )
         actualizado = actualizar_tiempo_antelacion(db, id_gasto, tiempo_antelacion)
+        if actualizado:
+            programar_sincronizacion_gasto(id_gasto)  # el aviso del evento cambia con la antelación
         if not actualizado:
             return response_error(
                 mensaje="Este gasto no tiene un recordatorio asociado",
@@ -97,8 +97,4 @@ def editar_tiempo_antelacion(
             code=200
         )
     except Exception as error:
-        return response_error(
-            mensaje="Error al actualizar el tiempo de antelación",
-            error=str(error),
-            code=500
-        )
+        return response_error_servidor("Error al actualizar el tiempo de antelación", error)
