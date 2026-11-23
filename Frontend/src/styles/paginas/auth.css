@@ -76,7 +76,7 @@
 }
 .field-group .icon {
   position: absolute;
-  left: 11px; top: 50%;
+  left: 11px; top: 20px; /* alineado con el campo de texto, no con el grupo completo (que crece cuando sale un error) */
   transform: translateY(-50%);
   font-size: 0.85rem;
   color: var(--gray-400);

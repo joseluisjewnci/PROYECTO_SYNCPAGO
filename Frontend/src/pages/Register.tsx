@@ -61,7 +61,7 @@ export default function Register() {
     }
 
     if (pendiente.requiere_telegram && !tokenTelegram.trim()) {
-      setError("Pega el token que te dio el bot de Telegram al compartir tu número.");
+      setError("Pega el código de 8 caracteres que te dio el bot de Telegram al compartir tu número.");
       return;
     }
 
@@ -114,17 +114,18 @@ export default function Register() {
               {pendiente.requiere_telegram && (
                 <>
                   <div className="info-box">
-                    {`Como indicaste un teléfono, compruébalo con Telegram: abre el bot, pulsa «Iniciar», luego «Compartir mi número», y pega aquí el token que te envíe. `}
+                    {`Como indicaste un teléfono, compruébalo con Telegram: abre el bot, pulsa «Iniciar», luego «Compartir mi número», y pega aquí el código de 8 caracteres que te envíe. `}
                     {pendiente.bot_url && <a href={pendiente.bot_url} target="_blank" rel="noopener noreferrer">Abrir el bot de Telegram</a>}
                   </div>
                   <div className="field-group">
                     <span className="icon">✈</span>
                     <input
                       type="text"
-                      placeholder="Token de Telegram"
+                      placeholder="Código de Telegram (8 caracteres)"
+                      maxLength={8}
                       autoComplete="off"
                       value={tokenTelegram}
-                      onChange={(e) => setTokenTelegram(e.target.value.trim())}
+                      onChange={(e) => setTokenTelegram(e.target.value.trim().toUpperCase())}
                     />
                   </div>
                 </>

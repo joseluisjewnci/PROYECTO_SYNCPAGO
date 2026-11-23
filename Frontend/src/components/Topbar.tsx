@@ -38,7 +38,7 @@ export default function Topbar({ onToggleSidebar, menuExpandido }: TopbarProps) 
       </button>
       <BuscadorGlobal />
       <div className="topbar-right">
-        <button className="notif-btn" aria-label="Notificaciones">🔔</button>
+        <button className="notif-btn" aria-label="Notificaciones" onClick={() => navigate("/recordatorios")}>🔔</button>
         <div
           className="user-menu"
           onClick={() => setDropdownOpen((v) => !v)}
