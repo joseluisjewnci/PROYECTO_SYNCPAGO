@@ -132,3 +132,15 @@ def response_error(
         }
 
     )
+
+
+# =========================================================
+# RESPUESTA DE ERROR INTERNO (no filtra detalles al cliente)
+# =========================================================
+def response_error_servidor(mensaje: str, error: Optional[Exception] = None):
+    # El detalle técnico va solo a la consola del servidor, NUNCA a la respuesta
+    if error is not None:
+        lineas = str(getattr(error, "orig", error)).splitlines()
+        print("ERROR INTERNO:", type(error).__name__, lineas[0][:200] if lineas else "")
+    return response_error(mensaje=mensaje, error="INTERNAL_ERROR", code=500)
+
