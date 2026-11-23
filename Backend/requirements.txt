@@ -1,3 +1,5 @@
+argon2-cffi==25.1.0  # CREADA - HASH
+PyJWT==2.10.1  # CREADA - HASH
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.14.2
@@ -16,3 +18,5 @@ starlette==1.6.0
 typing-inspection==0.4.4
 typing_extensions==4.16.0
 uvicorn==0.52.3
+cryptography>=42  # CREADA - GOOGLE CALENDAR
+tzdata>=2024.1  # CREADA - TELEGRAM (zona horaria en Windows)
