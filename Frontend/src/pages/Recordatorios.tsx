@@ -130,19 +130,6 @@ export default function Recordatorios() {
         )}
       </div>
 
-      <div className="perm-card">
-        <h3>
-          📱 Notificaciones por WhatsApp
-          <span className="badge-proximamente">Próximamente</span>
-        </h3>
-        <p>
-          Esta integración todavía no está disponible: el backend no tiene
-          conexión con WhatsApp ni una tabla de preferencias de notificación.
-          Cuando se agregue ese soporte, podrás activar aquí el envío de
-          alertas por este medio.
-        </p>
-      </div>
-
       <PanelNotificaciones />
       <ActividadSeguridad />
     </>
