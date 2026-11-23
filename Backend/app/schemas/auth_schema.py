@@ -166,7 +166,7 @@ class RegistroConfirmar(BaseModel):
     # Paso 2 del registro: el sobre del paso 1 y el código de 6 dígitos que llegó al correo.
     token_pendiente: str = Field(..., min_length=1, max_length=4000)
     codigo: str = Field(..., max_length=20)
-    token_telegram: Optional[str] = Field(default=None, max_length=4000)
+    token_telegram: Optional[str] = Field(default=None, max_length=20)  # MODIFICADO - TELEGRAM (ahora es un código corto de 8 caracteres)
 
     @field_validator('token_pendiente', 'token_telegram')
     @classmethod

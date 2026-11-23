@@ -13,6 +13,10 @@ import hmac
 import time
 from typing import Optional
 
+# MODIFICADO - TELEGRAM
+ALFABETO_CODIGO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # sin 0/O ni 1/I para que no se confundan al copiar
+_chat_por_telefono: dict = {}  # teléfono -> (chat_id, vence); solo vive en memoria
+
 from app.config.settings import SECRET_KEY, VINCULO_TELEGRAM_MINUTOS
 
 
@@ -41,3 +45,47 @@ def leer_codigo_vinculo(codigo: str) -> Optional[tuple]:
 
 def firma_valida(cuerpo: bytes, firma: bytes, chat_actual: Optional[int]) -> bool:
     return hmac.compare_digest(_firma(cuerpo, chat_actual), firma)
+
+
+# CREADA - TELEGRAM
+# Código CORTO (8 caracteres) para comprobar un teléfono durante el REGISTRO.
+# El bot lo entrega solo después de que Telegram garantiza que el número es de quien escribe.
+# No se guarda: se calcula con la clave secreta + el teléfono + la ventana de tiempo, así que el
+# servidor puede volver a calcularlo para comprobarlo. Vale entre 10 y 20 minutos (ventana actual o anterior).
+def _ventana(ahora: Optional[float] = None) -> int:
+    return int((ahora if ahora is not None else time.time()) // (VINCULO_TELEGRAM_MINUTOS * 60))
+
+
+def _codigo_de_ventana(telefono: str, ventana: int) -> str:
+    mensaje = b"telegram-telefono|" + telefono.encode("ascii", "ignore") + b"|" + str(ventana).encode("ascii")
+    crudo = hmac.new(SECRET_KEY.encode("utf-8"), mensaje, hashlib.sha256).digest()
+    return "".join(ALFABETO_CODIGO[b % 32] for b in crudo[:8])
+
+
+def crear_codigo_telefono(telefono: str, ahora: Optional[float] = None) -> str:
+    return _codigo_de_ventana(telefono, _ventana(ahora))
+
+
+def codigo_telefono_valido(telefono: str, codigo: Optional[str], ahora: Optional[float] = None) -> bool:
+    codigo = (codigo or "").strip().upper()
+    if len(codigo) != 8 or not telefono:
+        return False
+    actual = _ventana(ahora)
+    return any(hmac.compare_digest(_codigo_de_ventana(telefono, v), codigo) for v in (actual, actual - 1))
+
+
+# CREADA - TELEGRAM
+# Se recuerda qué chat compartió ese teléfono, para dejar Telegram vinculado al terminar el registro.
+# Si el servidor se reinicia en medio, solo se pierde la vinculación (el teléfono sí queda verificado).
+def recordar_chat_telefono(telefono: str, chat_id: int, ahora: Optional[float] = None) -> None:
+    t = ahora if ahora is not None else time.time()
+    for k in [k for k, (_, vence) in _chat_por_telefono.items() if vence < t]:
+        _chat_por_telefono.pop(k, None)
+    _chat_por_telefono[telefono] = (int(chat_id), t + 2 * VINCULO_TELEGRAM_MINUTOS * 60)
+
+
+def chat_de_telefono(telefono: str, ahora: Optional[float] = None) -> Optional[int]:
+    dato = _chat_por_telefono.get(telefono)
+    if not dato or dato[1] < (ahora if ahora is not None else time.time()):
+        return None
+    return dato[0]
