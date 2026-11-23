@@ -6,6 +6,9 @@ import type { Gasto, EstadoGasto } from "../interfaces/gasto";
 import { formatMoney } from "../utils/format";
 import EstadoBadge from "../components/EstadoBadge";
 import Pagination from "../components/Pagination";
+import { PERIODOS, dentroDelPeriodo, textoPeriodo } from "../utils/periodos";
+import type { PeriodoHistorial } from "../utils/periodos";
+import { descargarHistorialPdf } from "../utils/historialPdf";
 
 const PAGE_SIZE = 10;
 
@@ -16,6 +19,7 @@ export default function Historial() {
   const [cargando, setCargando] = useState(true);
   const [filtro, setFiltro] = useState<"todos" | EstadoGasto>("todos");
   const [pagina, setPagina] = useState(1);
+  const [periodo, setPeriodo] = useState<PeriodoHistorial>("todo");
 
   useEffect(() => {
     if (!usuario) return;
@@ -34,7 +38,22 @@ export default function Historial() {
 
   // El historial muestra TODOS los estados (incluidos los cancelados,
   // que ya no aparecen en la página de Gastos activos).
-  const filtrados = gastos.filter((g) => filtro === "todos" || g.estado === filtro);
+  const ahora = new Date();
+  // Se aplican a la vez el estado (pestañas) y el periodo reciente (selector); el PDF exporta exactamente esto
+  const filtrados = gastos.filter((g) => (filtro === "todos" || g.estado === filtro) && dentroDelPeriodo(g.fecha_vencimiento, periodo, ahora));
+
+  function exportarPdf() {
+    try {
+      descargarHistorialPdf(filtrados, {
+        usuario: usuario?.nombre ?? "",
+        periodo: textoPeriodo(periodo),
+        estado: filtro === "todos" ? "Todos" : filtro[0].toUpperCase() + filtro.slice(1),
+      });
+      mostrarToast("PDF generado ✓");
+    } catch {
+      mostrarToast("No se pudo generar el PDF");
+    }
+  }
 
   const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGE_SIZE));
   const paginaSegura = Math.min(pagina, totalPaginas);
@@ -66,6 +85,32 @@ export default function Historial() {
             {valor === "todos" ? "Todos" : valor[0].toUpperCase() + valor.slice(1)}
           </span>
         ))}
+      </div>
+
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", marginBottom: "18px" }}>
+        <label htmlFor="periodo-historial" style={{ fontWeight: 600 }}>Periodo:</label>
+        <select
+          id="periodo-historial"
+          value={periodo}
+          onChange={(e) => {
+            setPeriodo(e.target.value as PeriodoHistorial);
+            setPagina(1);
+          }}
+          style={{ padding: "9px 12px", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-sm)", fontFamily: "inherit" }}
+        >
+          {PERIODOS.map((p) => (
+            <option key={p.valor} value={p.valor}>{p.texto}</option>
+          ))}
+        </select>
+        <button
+          className="btn-save"
+          style={{ flex: "none", padding: "10px 18px" }}
+          onClick={exportarPdf}
+          disabled={cargando || filtrados.length === 0}
+        >
+          Exportar PDF
+        </button>
+        <span style={{ color: "var(--gray-400)" }}>{filtrados.length} registros</span>
       </div>
 
       <table className="data-table">
