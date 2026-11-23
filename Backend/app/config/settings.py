@@ -85,12 +85,12 @@ IP_DESDE_PROXY = os.getenv("IP_DESDE_PROXY", "false").strip().lower() == "true" 
 ZONA_HORARIA = os.getenv("ZONA_HORARIA", "America/Bogota") # CREADA - TELEGRAM (las fechas de la BD no llevan zona: se interpretan en esta)
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/") # CREADA - TELEGRAM
 
-# ========================================================= # CREADA - GOOGLE CALENDAR
-# GOOGLE CALENDAR OPCIONAL (OAuth 2.0) # CREADA - GOOGLE CALENDAR
-# ========================================================= # CREADA - GOOGLE CALENDAR
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip() # CREADA - GOOGLE CALENDAR
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip() # CREADA - GOOGLE CALENDAR
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://127.0.0.1:8000/api/v1/notificaciones/google/callback").strip() # CREADA - GOOGLE CALENDAR
-GOOGLE_ACTIVO = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET) # CREADA - GOOGLE CALENDAR
-# Clave para cifrar el refresh token de Google en la BD. Si no se define, se deriva de SECRET_KEY. # CREADA - GOOGLE CALENDAR
-CLAVE_CIFRADO = os.getenv("CLAVE_CIFRADO", "") # CREADA - GOOGLE CALENDAR
+# =========================================================
+# GOOGLE CALENDAR OPCIONAL (OAuth 2.0)
+# =========================================================
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://127.0.0.1:8000/api/v1/notificaciones/google/callback").strip()
+GOOGLE_ACTIVO = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
+# Clave para cifrar el refresh token de Google en la BD. Si no se define, se deriva de SECRET_KEY.
+CLAVE_CIFRADO = os.getenv("CLAVE_CIFRADO", "")
