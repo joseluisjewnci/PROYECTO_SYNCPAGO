@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import PanelNotificaciones from "../components/PanelNotificaciones";
+import ActividadSeguridad from "../components/ActividadSeguridad";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 import { gastosService } from "../services/gastosService";
@@ -141,17 +143,8 @@ export default function Recordatorios() {
         </p>
       </div>
 
-      <div className="perm-card">
-        <h3>
-          📅 Sincronizar con Calendario
-          <span className="badge-proximamente">Próximamente</span>
-        </h3>
-        <p>
-          Igual que con WhatsApp, la integración con Google/Outlook Calendar
-          requiere una funcionalidad de backend que aún no existe. Se agregará
-          en una siguiente iteración del proyecto.
-        </p>
-      </div>
+      <PanelNotificaciones />
+      <ActividadSeguridad />
     </>
   );
 }
