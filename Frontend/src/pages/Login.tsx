@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import PantallaCarga from "../components/PantallaCarga";
+import { esperar } from "../utils/pantallaCarga";
 
 export default function Login() {
   const { login } = useAuth();
@@ -10,9 +12,11 @@ export default function Login() {
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [sesionOk, setSesionOk] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (cargando || sesionOk) return;
     setError("");
 
     if (!correo || !contrasena) {
@@ -23,16 +27,19 @@ export default function Login() {
     setCargando(true);
     try {
       await login(correo, contrasena);
+      // Se muestra la pantalla de carga unos segundos antes de entrar al panel
+      setSesionOk(true);
+      await esperar();
       navigate("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al iniciar sesión.");
-    } finally {
       setCargando(false);
     }
   }
 
   return (
     <div className="auth-screen">
+      {sesionOk && <PantallaCarga mensaje="Sesión iniciada correctamente" detalle="Preparando tu panel de finanzas…" />}
       <div className="auth-inner">
         <div className="auth-logo">
           SYNC<span>PAGO</span>
@@ -46,7 +53,9 @@ export default function Login() {
                 type="email"
                 placeholder="Correo electrónico"
                 value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
+                // El correo siempre se guarda en minúsculas para que "Ana@x.com" y "ana@x.com" sean la misma cuenta
+                onChange={(e) => setCorreo(e.target.value.toLowerCase())}
+                autoCapitalize="none"
               />
             </div>
             <div className={`field-group${error ? " error" : ""}`}>
