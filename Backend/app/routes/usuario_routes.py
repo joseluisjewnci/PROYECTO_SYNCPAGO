@@ -13,11 +13,12 @@ from app.controllers.usuario_controller import (
     ErrorVerificacion,
     iniciar_sesion,
     cerrar_sesion,
-    renovar_sesion
+    renovar_sesion,
+    cambiar_contrasena  # CREADA - SEGURIDAD
 )
 from app.utils.response import response_success, response_error, response_error_servidor
 from app.utils.auth import get_sesion_actual, get_usuario_actual, es_propietario
-from app.schemas.auth_schema import UserRegister, UserLogin, RegistroConfirmar, RecuperarSolicitud, RecuperarConfirmar
+from app.schemas.auth_schema import UserRegister, UserLogin, RegistroConfirmar, RecuperarSolicitud, RecuperarConfirmar, CambiarContrasena  # MODIFICADO - SEGURIDAD
 
 router = APIRouter(
     prefix="/usuarios",
@@ -139,6 +140,23 @@ def renovar_token_usuario(sesion: dict = Depends(get_sesion_actual)):
 @router.get("/me")
 def usuario_en_sesion(usuario_actual: dict = Depends(get_usuario_actual)):
     return response_success(mensaje="Sesión válida", data=usuario_actual, code=200)
+
+# =========================================================
+# 2.0.3 CAMBIAR CONTRASEÑA con la sesión iniciada (pide la actual)  # CREADA - SEGURIDAD
+# =========================================================
+@router.post("/contrasena")
+def cambiar_contrasena_usuario(
+    datos: CambiarContrasena,
+    sesion: dict = Depends(get_sesion_actual),
+    db: Session = Depends(get_db)
+):
+    try:
+        resultado = cambiar_contrasena(db, sesion, datos.contrasena_actual, datos.contrasena_nueva)
+        return response_success(mensaje="Contraseña actualizada", data=resultado, code=200)
+    except ErrorVerificacion as error:
+        return response_error(mensaje=error.mensaje, error=error.error, code=error.code)
+    except Exception as error:
+        return response_error_servidor("Error al cambiar la contraseña", error)
 
 # =========================================================
 # 2.1 RECUPERACIÓN DE CONTRASEÑA, PASO 1: pedir el token por correo
