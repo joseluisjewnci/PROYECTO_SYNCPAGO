@@ -1,0 +1,6 @@
+/* Página Mi perfil: cambio de contraseña. */
+.perfil-form { max-width: 420px; margin-top: 12px; }
+.perfil-ayuda { font-size: 0.78rem; color: var(--gray-500); margin: 4px 0 0; }
+.perfil-error { font-size: 0.82rem; color: var(--red); margin: 8px 0; }
+.perfil-form .btn-save { width: 100%; }
+.perfil-form .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }

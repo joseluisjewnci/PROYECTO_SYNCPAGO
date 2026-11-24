@@ -10,6 +10,7 @@ import Gastos from "../pages/Gastos";
 import Recordatorios from "../pages/Recordatorios";
 import Estadisticas from "../pages/Estadisticas";
 import Historial from "../pages/Historial";
+import Perfil from "../pages/Perfil";
 
 export default function AppRoutes() {
   return (
@@ -25,6 +26,7 @@ export default function AppRoutes() {
           <Route path="/recordatorios" element={<Recordatorios />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/historial" element={<Historial />} />
+          <Route path="/perfil" element={<Perfil />} />
         </Route>
       </Route>
 

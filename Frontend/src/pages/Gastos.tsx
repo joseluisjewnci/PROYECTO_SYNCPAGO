@@ -241,7 +241,7 @@ export default function Gastos() {
         </div>
       </div>
 
-      <table className="data-table">
+      <table className="data-table tabla-gastos">
         <thead>
           <tr>
             <th>Categoría</th>
@@ -265,7 +265,7 @@ export default function Gastos() {
               const minutos = recordatorios[g.id_gasto];
               return (
                 <tr key={g.id_gasto}>
-                  <td>
+                  <td data-label="Categoría">
                     <span className="service-cell">
                       <span
                         className="color-dot"
@@ -274,7 +274,7 @@ export default function Gastos() {
                       {g.categoria}
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Vencimiento">
                     {formatDateTime(g.fecha_vencimiento)}
                     {minutos !== undefined && (
                       <div
@@ -291,11 +291,11 @@ export default function Gastos() {
                       </div>
                     )}
                   </td>
-                  <td>{formatMoney(g.precio)}</td>
-                  <td>
+                  <td data-label="Precio">{formatMoney(g.precio)}</td>
+                  <td data-label="Estado">
                     <EstadoBadge estado={g.estado} fechaVencimiento={g.fecha_vencimiento} />
                   </td>
-                  <td>
+                  <td data-label="Acciones">
                     {g.estado !== "pagado" && (
                       <button
                         className="action-btn"

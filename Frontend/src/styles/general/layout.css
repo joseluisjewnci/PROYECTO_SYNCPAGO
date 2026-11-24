@@ -204,21 +204,6 @@
 
 .topbar-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 
-.notif-btn {
-  color: rgba(255,255,255,0.8);
-  font-size: 1.1rem;
-  position: relative;
-  transition: color 0.15s;
-}
-.notif-btn:hover { color: var(--white); }
-.notif-dot {
-  position: absolute;
-  top: -2px; right: -2px;
-  width: 8px; height: 8px;
-  background: var(--red);
-  border-radius: 50%;
-}
-
 .user-menu {
   display: flex;
   align-items: center;

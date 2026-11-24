@@ -23,8 +23,22 @@
 
   .content { padding: 16px; }
 
-  .data-table th:nth-child(5),
-  .data-table td:nth-child(5) { display: none; }
+  /* La columna Acciones se oculta solo en las tablas que no son de Gastos (Gastos pasa a tarjetas, más abajo) */
+  .data-table:not(.tabla-gastos) th:nth-child(5),
+  .data-table:not(.tabla-gastos) td:nth-child(5) { display: none; }
+
+  /* Gastos en celular: cada fila se muestra como una tarjeta con todos sus datos y botones */
+  .tabla-gastos,
+  .tabla-gastos tbody,
+  .tabla-gastos tr,
+  .tabla-gastos td { display: block; width: 100%; }
+  .tabla-gastos thead { display: none; }
+  .tabla-gastos tbody tr { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); }
+  .tabla-gastos td { border-bottom: none; padding: 5px 0; }
+  .tabla-gastos td[data-label] { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .tabla-gastos td[data-label]::before { content: attr(data-label); font-size: 0.78rem; font-weight: 700; color: var(--gray-500); flex-shrink: 0; }
+  .tabla-gastos td[data-label="Acciones"] { justify-content: flex-start; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
+  .tabla-gastos .action-btn { min-width: 44px; min-height: 44px; font-size: 1.15rem; background: var(--gray-100); }
 
   .modal { margin: 16px; max-width: calc(100% - 32px); }
 
@@ -37,8 +51,8 @@
 
   .welcome-banner h1 { font-size: 1.3rem; }
 
-  .data-table th:nth-child(2),
-  .data-table td:nth-child(2) { display: none; }
+  .data-table:not(.tabla-gastos) th:nth-child(2),
+  .data-table:not(.tabla-gastos) td:nth-child(2) { display: none; }
 
   .pagination     { flex-direction: column; gap: 10px; text-align: center; }
   .modal-footer   { flex-direction: column; }
