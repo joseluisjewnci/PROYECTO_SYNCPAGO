@@ -1,0 +1,44 @@
+/* Estilos de la página Recordatorios. */
+/* ============ RECORDATORIOS ============ */
+
+.perm-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.perm-card h3 { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+.perm-card p  { font-size: 0.83rem; color: var(--gray-500); line-height: 1.6; }
+.perm-card ul { padding-left: 16px; margin: 6px 0 12px; }
+.perm-card ul li { font-size: 0.82rem; color: var(--gray-500); list-style: disc; margin-bottom: 2px; }
+
+.perm-question { font-size: 0.85rem; font-weight: 600; margin: 12px 0 8px; }
+
+.minutos-input-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.minutos-input-row input[type="number"] {
+  width: 120px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+.minutos-conversion {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--blue-mid);
+  background: var(--gray-50);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.badge-proximamente {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  background: var(--gray-100);
+  padding: 3px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+}

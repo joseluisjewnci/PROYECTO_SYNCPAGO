@@ -1,0 +1,21 @@
+/* Buscador global: filtros rápidos y categorías. */
+/* ============ BUSCADOR GLOBAL: filtros rápidos y categorías ============ */
+
+.search-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 8px 10px; }
+.search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 20px;
+  background: var(--white);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  transition: border-color 0.12s, background 0.12s;
+}
+.search-chip:hover,
+.search-chip.activo { border-color: var(--blue-mid); background: var(--gray-50); }
+.search-chip small { font-size: 0.74rem; font-weight: 500; color: var(--gray-500); }
+.search-chip-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import PanelNotificaciones from "../components/PanelNotificaciones";
+import ActividadSeguridad from "../components/ActividadSeguridad";
 import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 import { gastosService } from "../services/gastosService";
@@ -128,30 +130,8 @@ export default function Recordatorios() {
         )}
       </div>
 
-      <div className="perm-card">
-        <h3>
-          📱 Notificaciones por WhatsApp
-          <span className="badge-proximamente">Próximamente</span>
-        </h3>
-        <p>
-          Esta integración todavía no está disponible: el backend no tiene
-          conexión con WhatsApp ni una tabla de preferencias de notificación.
-          Cuando se agregue ese soporte, podrás activar aquí el envío de
-          alertas por este medio.
-        </p>
-      </div>
-
-      <div className="perm-card">
-        <h3>
-          📅 Sincronizar con Calendario
-          <span className="badge-proximamente">Próximamente</span>
-        </h3>
-        <p>
-          Igual que con WhatsApp, la integración con Google/Outlook Calendar
-          requiere una funcionalidad de backend que aún no existe. Se agregará
-          en una siguiente iteración del proyecto.
-        </p>
-      </div>
+      <PanelNotificaciones />
+      <ActividadSeguridad />
     </>
   );
 }

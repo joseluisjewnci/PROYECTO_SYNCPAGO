@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-def obtener_alertas_recordatorios(db: Session):
+def obtener_alertas_recordatorios(db: Session, id_usuario: int):
     sql = text("""
         SELECT u.nombre AS usuario, tg.detalle AS gasto, g.fecha_vencimiento, 
                r.tiempo_antelacion AS minutos_antes, 
@@ -11,9 +11,10 @@ def obtener_alertas_recordatorios(db: Session):
         INNER JOIN tipo_gasto tg ON g.id_tipo = tg.id_tipo 
         INNER JOIN usuarios u ON tg.id_usuario = u.id_usuario 
         WHERE g.estado = 'pendiente' 
+          AND tg.id_usuario = :id_usuario -- CREADA - SEGURIDAD
         ORDER BY fecha_notificacion ASC;
     """)
-    resultado = db.execute(sql)
+    resultado = db.execute(sql, {"id_usuario": id_usuario})
     return [dict(row._mapping) for row in resultado]
 
 def obtener_recordatorio_por_gasto(db: Session, id_gasto: int):

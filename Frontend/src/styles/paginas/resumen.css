@@ -1,0 +1,49 @@
+/* Resumen por periodo (Estadísticas). */
+/* ============ RESUMEN POR PERIODO (Estadísticas) ============ */
+
+.resumen-filtro { margin-bottom: 14px; }
+.resumen-filtro .filter-btn { padding: 6px 12px; font-size: 0.8rem; }
+.resumen-nota { margin-top: 8px; }
+.resumen-subtitulo {
+  margin: 16px 0 6px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.resumen-lista {
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  border-top: 1px solid var(--gray-100);
+  padding-right: 4px;
+}
+.resumen-lista:focus-visible { outline: 2px solid var(--blue-mid); outline-offset: 2px; }
+.resumen-fila {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1.6fr;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 0.85rem;
+}
+.resumen-mes { font-weight: 700; color: var(--gray-900); }
+.resumen-dato { display: flex; flex-direction: column; font-weight: 600; color: var(--gray-700); }
+.resumen-dato small { font-size: 0.7rem; font-weight: 600; color: var(--gray-400); }
+.resumen-balance {
+  justify-self: start;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.resumen-balance.positivo { background: #dcfce7; color: var(--green-dark); }
+.resumen-balance.negativo { background: #fee2e2; color: #b91c1c; }
+.resumen-balance.sin { background: var(--gray-100); color: var(--gray-500); }
+
+@media (max-width: 520px) {
+  .resumen-fila { grid-template-columns: 1fr 1fr; }
+  .resumen-mes { grid-column: 1 / -1; }
+  .resumen-balance { grid-column: 1 / -1; }
+}

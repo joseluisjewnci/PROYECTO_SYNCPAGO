@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, BigInteger, String, TIMESTAMP
+from sqlalchemy import Boolean, Column, BigInteger, SmallInteger, String, Text, TIMESTAMP 
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -40,6 +40,53 @@ class Usuario(Base):
         server_default=func.now(),
         default=datetime.utcnow
     )
+
+    # Columnas de seguridad
+    sesion_id = Column(
+        String(64)
+    )
+
+    intentos_fallidos = Column(
+        SmallInteger,
+        nullable=False,
+        server_default="0"
+    )
+
+    bloqueado_hasta = Column(
+        TIMESTAMP
+    )
+
+    # Notificaciones opcionales
+    telegram_chat_id = Column(
+        BigInteger
+    )
+
+    telefono_verificado = Column(
+        Boolean,
+        nullable=False,
+        server_default="false"
+    )
+
+    telegram_activo = Column(
+        Boolean,
+        nullable=False,
+        server_default="false"
+    )
+
+    notif_clases = Column(
+        String(60),
+        nullable=False,
+        server_default="vital,entretenimiento,varios"
+    )
+
+    google_refresh_token = Column(
+        Text
+    )
+
+    google_calendario_id = Column(
+        String(255)
+    )
+
 
     # Relación uno-a-muchos con TipoGasto
     tipos_gasto = relationship(

@@ -1,0 +1,89 @@
+/* Estilos de la página Finanzas / Estadísticas. */
+/* ============ FINANZAS (Estadísticas) ============ */
+/* Mismos colores y componentes que el resto de la app. */
+
+.finanzas-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.finanzas-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.finanzas-card-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.finanzas-icon { font-size: 1.8rem; }
+.finanzas-card-header h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+.finanzas-card-header p { font-size: 0.82rem; color: var(--gray-500); }
+
+.presupuesto-input-row { display: flex; gap: 10px; margin-bottom: 8px; }
+.presupuesto-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+}
+.presupuesto-prefix { color: var(--gray-400); font-weight: 700; margin-right: 4px; }
+.presupuesto-input-wrap input {
+  border: none;
+  padding: 10px 0;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.btn-guardar-presupuesto {
+  padding: 0 18px;
+  background: var(--blue-mid);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: background 0.2s;
+}
+.btn-guardar-presupuesto:hover { background: var(--blue-dark); }
+.presupuesto-hint { font-size: 0.8rem; color: var(--gray-500); min-height: 16px; }
+
+.ahorro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.ahorro-item { display: flex; flex-direction: column; gap: 4px; }
+.ahorro-item-destacado {
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.ahorro-label { font-size: 0.76rem; color: var(--gray-500); font-weight: 600; }
+.ahorro-value { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; color: var(--gray-900); }
+.ahorro-value.green { color: var(--green-dark); }
+.ahorro-value.red   { color: var(--red); }
+
+.ahorro-barra-wrap { margin-bottom: 12px; }
+.ahorro-barra-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  margin-bottom: 5px;
+}
+
+.ahorro-mensaje {
+  font-size: 0.83rem;
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+.ahorro-mensaje.positivo { background: #dcfce7; color: #16a34a; }
+.ahorro-mensaje.negativo { background: #fee2e2; color: #b91c1c; }
