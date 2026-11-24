@@ -14,6 +14,7 @@ const TEXTOS: Record<string, string> = {
   CODIGO_INVALIDO: "Código de verificación incorrecto",
   RECUPERACION_SOLICITADA: "Recuperación de contraseña solicitada",
   CONTRASENA_CAMBIADA: "Contraseña cambiada",
+  CAMBIO_CLAVE_FALLIDO: "Intento fallido de cambio de contraseña",
   TELEFONO_VERIFICADO: "Teléfono verificado",
   TELEGRAM_VINCULADO: "Telegram vinculado",
   TELEGRAM_DESVINCULADO: "Telegram desvinculado",

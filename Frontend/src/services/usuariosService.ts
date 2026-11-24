@@ -54,6 +54,14 @@ export const usuariosService = {
     return api.post<null>("/usuarios/logout");
   },
 
+  // Cambia la contraseña con la sesión abierta; devuelve un token nuevo (las demás sesiones se cierran)
+  cambiarContrasena(contrasenaActual: string, contrasenaNueva: string) {
+    return api.postJson<TokenRenovado>("/usuarios/contrasena", {
+      contrasena_actual: contrasenaActual,
+      contrasena_nueva: contrasenaNueva,
+    });
+  },
+
   obtener(idUsuario: number) {
     return api.get<Usuario>(`/usuarios/${idUsuario}`);
   },

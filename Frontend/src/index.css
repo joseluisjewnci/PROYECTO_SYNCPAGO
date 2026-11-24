@@ -12,3 +12,4 @@
 @import './styles/paginas/graficas.css'; /* Gráficas de Estadísticas */
 @import './styles/paginas/buscador.css'; /* Buscador global: filtros rápidos y categorías */
 @import './styles/paginas/resumen.css'; /* Resumen por periodo (Estadísticas) */
+@import './styles/paginas/perfil.css'; /* Página Mi perfil: cambio de contraseña */
