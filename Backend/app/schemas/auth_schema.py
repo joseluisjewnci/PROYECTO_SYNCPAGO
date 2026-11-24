@@ -204,3 +204,15 @@ class RecuperarConfirmar(BaseModel):
     @classmethod
     def validar_contrasena_nueva(cls, v: str) -> str:
         return _validar_contrasena_segura(v)
+
+
+# CREADA - SEGURIDAD
+class CambiarContrasena(BaseModel):
+    # Cambio de contraseña con la sesión iniciada: se pide la actual para confirmar que es el dueño
+    contrasena_actual: str = Field(..., min_length=1, max_length=128)
+    contrasena_nueva: str = Field(..., max_length=128)
+
+    @field_validator('contrasena_nueva')
+    @classmethod
+    def validar_contrasena_nueva(cls, v: str) -> str:
+        return _validar_contrasena_segura(v)

@@ -405,3 +405,38 @@ def renovar_sesion(sesion: dict) -> dict:
     )
     return {"token": token, "expira_minutos": ACCESS_TOKEN_MINUTOS}
 
+
+# =========================================================
+# CAMBIO DE CONTRASEÑA CON LA SESIÓN INICIADA  # CREADA - SEGURIDAD
+# =========================================================
+def cambiar_contrasena(db: Session, sesion: dict, contrasena_actual: str, contrasena_nueva: str) -> dict:
+    # Pide la contraseña actual, guarda la nueva (Argon2id) y cierra las demás sesiones del usuario.
+    # Devuelve un token nuevo para que ESTE navegador siga con la sesión abierta.
+    usuario = sesion["usuario"]
+    id_usuario = usuario["id_usuario"]
+    if not registrar_intento("cambiar-clave:" + str(id_usuario), 5, 900):
+        raise ErrorVerificacion("Demasiados intentos. Espera unos minutos e inténtalo de nuevo.", "TOO_MANY_REQUESTS", 429)
+
+    fila = db.execute(text("SELECT contrasena FROM usuarios WHERE id_usuario = :id_usuario;"), {"id_usuario": id_usuario}).fetchone()
+    if not fila or not verificar_contrasena(fila[0], contrasena_actual):
+        registrar_evento("CAMBIO_CLAVE_FALLIDO", id_usuario=id_usuario, correo=usuario.get("correo"), exito=False, detalle="Contraseña actual incorrecta")
+        raise ErrorVerificacion("La contraseña actual no es correcta.", "CURRENT_PASSWORD_INVALID", 400)
+    if contrasena_nueva == contrasena_actual:
+        raise ErrorVerificacion("La contraseña nueva debe ser distinta a la actual.", "PASSWORD_UNCHANGED", 400)
+
+    # Sesión nueva: el sid anterior deja de servir (cierra otras sesiones) y este navegador recibe el token nuevo
+    sesion_id = generar_sesion_id()
+    resultado = db.execute(
+        text("UPDATE usuarios SET contrasena = :nueva, sesion_id = :sesion_hash, intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = :id_usuario AND contrasena = :actual;"),
+        {"nueva": _preparar_contrasena(contrasena_nueva), "sesion_hash": hash_sesion_id(sesion_id), "id_usuario": id_usuario, "actual": fila[0]},
+    )
+    db.commit()
+    if resultado.rowcount != 1:
+        raise ErrorVerificacion("No se pudo cambiar la contraseña. Inténtalo de nuevo.", "PASSWORD_CHANGE_FAILED", 409)
+    registrar_evento("CONTRASENA_CAMBIADA", id_usuario=id_usuario, correo=usuario.get("correo"), detalle="Contraseña cambiada desde Mi perfil; otras sesiones cerradas")
+    token = crear_token(
+        "acceso",
+        {"uid": id_usuario, "sid": sesion_id, "ini": sesion["token"].get("ini", int(time.time()))},
+        minutos=ACCESS_TOKEN_MINUTOS,
+    )
+    return {"token": token, "expira_minutos": ACCESS_TOKEN_MINUTOS}
