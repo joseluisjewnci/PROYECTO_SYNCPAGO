@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import BuscadorGlobal from "./BuscadorGlobal";
@@ -12,6 +12,26 @@ export default function Topbar({ onToggleSidebar, menuExpandido }: TopbarProps) 
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Con el menú abierto, se cierra al pulsar en cualquier otro lugar o al presionar Escape
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const alPulsar = (e: MouseEvent | TouchEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setDropdownOpen(false);
+    };
+    const alTeclear = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", alPulsar);
+    document.addEventListener("touchstart", alPulsar);
+    document.addEventListener("keydown", alTeclear);
+    return () => {
+      document.removeEventListener("mousedown", alPulsar);
+      document.removeEventListener("touchstart", alPulsar);
+      document.removeEventListener("keydown", alTeclear);
+    };
+  }, [dropdownOpen]);
 
   function handleLogout() {
     logout();
@@ -39,6 +59,7 @@ export default function Topbar({ onToggleSidebar, menuExpandido }: TopbarProps) 
       <BuscadorGlobal />
       <div className="topbar-right">
         <div
+          ref={menuRef}
           className="user-menu"
           onClick={() => setDropdownOpen((v) => !v)}
           role="button"
