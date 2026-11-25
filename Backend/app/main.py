@@ -43,7 +43,8 @@ try:
     except Exception:
         print("FALTA LA TABLA DE AUDITORÍA: ejecuta Database/11_AUDITORIA_EVENTOS.sql en PostgreSQL (haz pg_dump antes). Mientras tanto la app funciona, pero no guarda eventos de seguridad.")
 except Exception as error:
-    print(f"Error de conexión: {error}")
+    print(f"Error de conexión con PostgreSQL: {error}")
+    raise
 
 app = FastAPI(
     title="API Control de Gastos (SYNCPAGO)",
