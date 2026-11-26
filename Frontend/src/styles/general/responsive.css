@@ -27,18 +27,56 @@
   .data-table:not(.tabla-gastos) th:nth-child(5),
   .data-table:not(.tabla-gastos) td:nth-child(5) { display: none; }
 
-  /* Gastos en celular: cada fila se muestra como una tarjeta con todos sus datos y botones */
+  /* Gastos en celular: cada gasto es una tarjeta con precio, vencimiento, estado y botones */
+  .tabla-gastos { background: transparent; box-shadow: none; border-radius: 0; }
   .tabla-gastos,
-  .tabla-gastos tbody,
-  .tabla-gastos tr,
-  .tabla-gastos td { display: block; width: 100%; }
+  .tabla-gastos tbody { display: block; width: 100%; }
   .tabla-gastos thead { display: none; }
-  .tabla-gastos tbody tr { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); }
-  .tabla-gastos td { border-bottom: none; padding: 5px 0; }
-  .tabla-gastos td[data-label] { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .tabla-gastos td[data-label]::before { content: attr(data-label); font-size: 0.78rem; font-weight: 700; color: var(--gray-500); flex-shrink: 0; }
-  .tabla-gastos td[data-label="Acciones"] { justify-content: flex-start; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
-  .tabla-gastos .action-btn { min-width: 44px; min-height: 44px; font-size: 1.15rem; background: var(--gray-100); }
+  .tabla-gastos tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "cat precio"
+      "venc venc"
+      "estado estado"
+      "acc acc";
+    gap: 6px 12px;
+    align-items: center;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .tabla-gastos td { display: block; padding: 0; border: none; }
+  .tabla-gastos tbody tr:hover td { background: transparent; }
+  .tabla-gastos td:not([data-label]) { grid-column: 1 / -1; }
+  .tabla-gastos td[data-label="Categoría"] { grid-area: cat; min-width: 0; font-size: 1rem; font-weight: 700; color: var(--gray-900); }
+  .tabla-gastos td[data-label="Precio"] { grid-area: precio; white-space: nowrap; font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--gray-900); }
+  .tabla-gastos td[data-label="Vencimiento"] { grid-area: venc; font-size: 0.85rem; color: var(--gray-700); }
+  .tabla-gastos td[data-label="Vencimiento"]::before { content: "Vence: "; font-weight: 700; color: var(--gray-500); }
+  .tabla-gastos td[data-label="Estado"] { grid-area: estado; }
+  .tabla-gastos td[data-label="Acciones"] {
+    grid-area: acc;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-100);
+  }
+  .tabla-gastos .action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-height: 52px;
+    padding: 8px 4px;
+    font-size: 1.2rem;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+  }
+  .tabla-gastos .action-label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--gray-600); }
 
   .modal { margin: 16px; max-width: calc(100% - 32px); }
 
@@ -56,8 +94,13 @@
 
   .pagination     { flex-direction: column; gap: 10px; text-align: center; }
   .modal-footer   { flex-direction: column; }
-  .table-toolbar  { flex-direction: column; align-items: stretch; }
-  .search-input-wrap { max-width: 100%; margin-left: 0; }
+  /* Filtros en 2 columnas; el filtro de meses y el buscador ocupan todo el ancho */
+  .table-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .table-toolbar .meses-filtro,
+  .table-toolbar .search-input-wrap { grid-column: 1 / -1; }
+  .meses-filtro .filter-btn { width: 100%; }
+  .search-input-wrap { flex: none; max-width: 100%; margin-left: 0; }
+  .btn-nuevo-gasto { width: 100%; padding: 12px; }
 }
 
 .sidebar-overlay {

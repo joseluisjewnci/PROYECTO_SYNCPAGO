@@ -189,9 +189,14 @@ export default function Gastos() {
 
   return (
     <>
-      <header className="page-header">
-        <h1>Mis Gastos</h1>
-        <p>Gestiona, edita y controla el estado de todos tus gastos activos.</p>
+      <header className="page-header page-header-fila">
+        <div>
+          <h1>Mis Gastos</h1>
+          <p>Gestiona, edita y controla el estado de todos tus gastos activos.</p>
+        </div>
+        <button className="btn-nuevo-gasto" onClick={abrirNuevo}>
+          + Nuevo gasto
+        </button>
       </header>
 
       <div className="table-toolbar">
@@ -302,7 +307,7 @@ export default function Gastos() {
                         title="Marcar como pagado"
                         onClick={() => marcarComoPagado(g)}
                       >
-                        ✅
+                        ✅<span className="action-label">Pagar</span>
                       </button>
                     )}
                     <button
@@ -310,21 +315,21 @@ export default function Gastos() {
                       title="Editar"
                       onClick={() => abrirEditar(g)}
                     >
-                      ✏️
+                      ✏️<span className="action-label">Editar</span>
                     </button>
                     <button
                       className="action-btn"
                       title="Cancelar"
                       onClick={() => cancelarGasto(g)}
                     >
-                      🚫
+                      🚫<span className="action-label">Cancelar</span>
                     </button>
                     <button
                       className="action-btn del"
                       title="Eliminar"
                       onClick={() => eliminarGasto(g)}
                     >
-                      🗑️
+                      🗑️<span className="action-label">Eliminar</span>
                     </button>
                   </td>
                 </tr>

@@ -551,3 +551,20 @@
   .carga-marca  { font-size: 1.45rem; }
   .carga-titulo { font-size: 1.2rem; }
 }
+
+/* Botón para registrar un gasto, siempre visible en la página Mis Gastos (también en celular) */
+.btn-nuevo-gasto {
+  padding: 10px 18px;
+  background: var(--green);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow);
+  transition: background 0.15s;
+}
+.btn-nuevo-gasto:hover { background: var(--green-dark); }
+
+/* Texto bajo el icono de cada acción: solo se muestra en celular (ver responsive.css) */
+.action-label { display: none; }
