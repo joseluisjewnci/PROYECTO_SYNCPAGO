@@ -6,6 +6,9 @@ import { obtenerToken, guardarToken, borrarToken, EVENTO_SESION_EXPIRADA } from 
 // Clave de una versión antigua que guardaba el usuario en el navegador; hoy solo se usa para borrarla
 const STORAGE_KEY = "sp_usuario";
 const RENOVAR_CADA_MS = 10 * 60 * 1000; // cada cuánto se renueva la sesión (solo si el usuario estuvo activo)
+// Si el servidor no responde al abrir la página (por ejemplo, el servidor gratuito despertando), se reintenta
+// con estas esperas antes de rendirse. Mientras tanto el token se conserva.
+const REINTENTOS_MS = [3000, 6000, 12000, 20000];
 
 interface AuthContextValue {
   usuario: Usuario | null;
@@ -30,10 +33,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setCargando(false);
       return;
     }
-    usuariosService.me()
-      .then((datos) => setUsuario(datos))
-      .catch(() => borrarToken())
-      .finally(() => setCargando(false));
+    let cancelado = false;
+    let temporizador: number | undefined;
+
+    function comprobarSesion(intento: number) {
+      usuariosService.me()
+        .then((datos) => {
+          if (cancelado) return;
+          setUsuario(datos);
+          setCargando(false);
+        })
+        .catch(() => {
+          if (cancelado) return;
+          // Si el servidor dijo que el token no sirve (401), api.ts ya lo borró: la sesión terminó.
+          // Si fue un fallo de red o del servidor, el token se conserva y se vuelve a intentar.
+          if (!obtenerToken() || intento >= REINTENTOS_MS.length) {
+            setCargando(false);
+            return;
+          }
+          temporizador = window.setTimeout(() => comprobarSesion(intento + 1), REINTENTOS_MS[intento]);
+        });
+    }
+    comprobarSesion(0);
+
+    return () => {
+      cancelado = true;
+      window.clearTimeout(temporizador);
+    };
   }, []);
 
   // Si el servidor responde 401 en cualquier llamada, se cierra la sesión en pantalla
