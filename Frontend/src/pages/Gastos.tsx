@@ -202,24 +202,28 @@ export default function Gastos() {
       <div className="table-toolbar">
         <button
           className={`filter-btn${filtroEstado === "todos" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "todos"}
           onClick={() => setFiltroEstado("todos")}
         >
           Todos
         </button>
         <button
           className={`filter-btn${filtroEstado === "pendiente" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "pendiente"}
           onClick={() => setFiltroEstado("pendiente")}
         >
           Pendientes
         </button>
         <button
           className={`filter-btn${filtroEstado === "vencido" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "vencido"}
           onClick={() => setFiltroEstado("vencido")}
         >
           Vencidos
         </button>
         <button
           className={`filter-btn${filtroEstado === "pagado" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "pagado"}
           onClick={() => setFiltroEstado("pagado")}
         >
           Pagados
@@ -236,6 +240,7 @@ export default function Gastos() {
           <span className="search-icon">🔍</span>
           <input
             type="text"
+            aria-label="Buscar gastos por categoría"
             placeholder="Buscar categoría..."
             value={busqueda}
             onChange={(e) => {
@@ -305,6 +310,7 @@ export default function Gastos() {
                       <button
                         className="action-btn"
                         title="Marcar como pagado"
+                        aria-label={`Pagar ${g.categoria}`}
                         onClick={() => marcarComoPagado(g)}
                       >
                         ✅<span className="action-label">Pagar</span>
@@ -313,6 +319,7 @@ export default function Gastos() {
                     <button
                       className="action-btn"
                       title="Editar"
+                      aria-label={`Editar ${g.categoria}`}
                       onClick={() => abrirEditar(g)}
                     >
                       ✏️<span className="action-label">Editar</span>
@@ -320,6 +327,7 @@ export default function Gastos() {
                     <button
                       className="action-btn"
                       title="Cancelar"
+                      aria-label={`Cancelar ${g.categoria}`}
                       onClick={() => cancelarGasto(g)}
                     >
                       🚫<span className="action-label">Cancelar</span>
@@ -327,6 +335,7 @@ export default function Gastos() {
                     <button
                       className="action-btn del"
                       title="Eliminar"
+                      aria-label={`Eliminar ${g.categoria}`}
                       onClick={() => eliminarGasto(g)}
                     >
                       🗑️<span className="action-label">Eliminar</span>
