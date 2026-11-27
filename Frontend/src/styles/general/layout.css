@@ -84,7 +84,7 @@
   overflow: hidden;
   margin: 12px;
   padding: 10px;
-  background: var(--green);
+  background: var(--green-btn);
   color: var(--white);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
@@ -93,7 +93,7 @@
   text-align: center;
   transition: background 0.2s;
 }
-.nav-btn-add:hover { background: var(--green-dark); }
+.nav-btn-add:hover { background: var(--green-btn-hover); }
 .nav-btn-add .nav-icon { width: auto; font-size: 1.3rem; font-weight: 900; }
 
 /* Menú contraído (escritorio): solo iconos. Al cambiar --sidebar-w se
