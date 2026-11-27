@@ -107,7 +107,7 @@
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background: var(--green);
+  background: var(--green-btn);
   color: var(--white);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
@@ -116,7 +116,7 @@
   transition: background 0.2s;
   margin-top: 4px;
 }
-.btn-primary:hover { background: var(--green-dark); }
+.btn-primary:hover { background: var(--green-btn-hover); }
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .auth-link {
@@ -151,4 +151,5 @@
   color: #1e40af;
   margin-bottom: 16px;
   line-height: 1.5;
+  overflow-wrap: anywhere; /* un correo largo se parte en vez de salirse del cuadro */
 }
