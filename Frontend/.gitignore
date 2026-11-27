@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 .env.example
-.env*.tsbuildinfo
+.env
+.env.*
+*.tsbuildinfo
