@@ -11,6 +11,8 @@ import Recordatorios from "../pages/Recordatorios";
 import Estadisticas from "../pages/Estadisticas";
 import Historial from "../pages/Historial";
 import Perfil from "../pages/Perfil";
+import Privacidad from "../pages/Privacidad";
+import Terminos from "../pages/Terminos";
 
 export default function AppRoutes() {
   return (
@@ -18,6 +20,10 @@ export default function AppRoutes() {
       <Route path="/" element={<Login />} />
       <Route path="/registro" element={<Register />} />
       <Route path="/recuperar" element={<ForgotPassword />} />
+
+      {/* Páginas públicas: se pueden abrir sin iniciar sesión (las pide la configuración de Google) */}
+      <Route path="/privacidad" element={<Privacidad />} />
+      <Route path="/terminos" element={<Terminos />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
