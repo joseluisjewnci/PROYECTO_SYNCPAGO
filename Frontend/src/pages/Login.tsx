@@ -79,6 +79,9 @@ export default function Login() {
         <p className="auth-link">
           ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
         </p>
+        <p className="auth-legal">
+          <Link to="/privacidad">Política de privacidad</Link> · <Link to="/terminos">Condiciones del servicio</Link>
+        </p>
       </div>
     </div>
   );

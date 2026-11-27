@@ -215,6 +215,9 @@ export default function Register() {
         <p className="auth-link">
           ¿Ya tienes cuenta? <Link to="/">Inicia sesión</Link>
         </p>
+        <p className="auth-legal">
+          Al registrarte aceptas las <Link to="/terminos">Condiciones del servicio</Link> y la <Link to="/privacidad">Política de privacidad</Link>.
+        </p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import RutaPublica from "./RutaPublica";
 import Layout from "../components/Layout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -11,13 +12,21 @@ import Recordatorios from "../pages/Recordatorios";
 import Estadisticas from "../pages/Estadisticas";
 import Historial from "../pages/Historial";
 import Perfil from "../pages/Perfil";
+import Privacidad from "../pages/Privacidad";
+import Terminos from "../pages/Terminos";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/registro" element={<Register />} />
-      <Route path="/recuperar" element={<ForgotPassword />} />
+      <Route element={<RutaPublica />}>
+        <Route path="/" element={<Login />} />
+        <Route path="/registro" element={<Register />} />
+        <Route path="/recuperar" element={<ForgotPassword />} />
+      </Route>
+
+      {/* Páginas públicas: se pueden abrir sin iniciar sesión, con o sin sesión (las pide la configuración de Google) */}
+      <Route path="/privacidad" element={<Privacidad />} />
+      <Route path="/terminos" element={<Terminos />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>

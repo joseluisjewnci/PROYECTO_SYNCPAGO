@@ -189,32 +189,41 @@ export default function Gastos() {
 
   return (
     <>
-      <header className="page-header">
-        <h1>Mis Gastos</h1>
-        <p>Gestiona, edita y controla el estado de todos tus gastos activos.</p>
+      <header className="page-header page-header-fila">
+        <div>
+          <h1>Mis Gastos</h1>
+          <p>Gestiona, edita y controla el estado de todos tus gastos activos.</p>
+        </div>
+        <button className="btn-nuevo-gasto" onClick={abrirNuevo}>
+          + Nuevo gasto
+        </button>
       </header>
 
       <div className="table-toolbar">
         <button
           className={`filter-btn${filtroEstado === "todos" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "todos"}
           onClick={() => setFiltroEstado("todos")}
         >
           Todos
         </button>
         <button
           className={`filter-btn${filtroEstado === "pendiente" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "pendiente"}
           onClick={() => setFiltroEstado("pendiente")}
         >
           Pendientes
         </button>
         <button
           className={`filter-btn${filtroEstado === "vencido" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "vencido"}
           onClick={() => setFiltroEstado("vencido")}
         >
           Vencidos
         </button>
         <button
           className={`filter-btn${filtroEstado === "pagado" ? " active" : ""}`}
+          aria-pressed={filtroEstado === "pagado"}
           onClick={() => setFiltroEstado("pagado")}
         >
           Pagados
@@ -231,6 +240,7 @@ export default function Gastos() {
           <span className="search-icon">🔍</span>
           <input
             type="text"
+            aria-label="Buscar gastos por categoría"
             placeholder="Buscar categoría..."
             value={busqueda}
             onChange={(e) => {
@@ -300,31 +310,35 @@ export default function Gastos() {
                       <button
                         className="action-btn"
                         title="Marcar como pagado"
+                        aria-label={`Pagar ${g.categoria}`}
                         onClick={() => marcarComoPagado(g)}
                       >
-                        ✅
+                        ✅<span className="action-label">Pagar</span>
                       </button>
                     )}
                     <button
                       className="action-btn"
                       title="Editar"
+                      aria-label={`Editar ${g.categoria}`}
                       onClick={() => abrirEditar(g)}
                     >
-                      ✏️
+                      ✏️<span className="action-label">Editar</span>
                     </button>
                     <button
                       className="action-btn"
                       title="Cancelar"
+                      aria-label={`Cancelar ${g.categoria}`}
                       onClick={() => cancelarGasto(g)}
                     >
-                      🚫
+                      🚫<span className="action-label">Cancelar</span>
                     </button>
                     <button
                       className="action-btn del"
                       title="Eliminar"
+                      aria-label={`Eliminar ${g.categoria}`}
                       onClick={() => eliminarGasto(g)}
                     >
-                      🗑️
+                      🗑️<span className="action-label">Eliminar</span>
                     </button>
                   </td>
                 </tr>

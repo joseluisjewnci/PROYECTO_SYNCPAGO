@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useId, useMemo, useState } from "react";
 import Modal from "./Modal";
 import type { ClaseTipoGasto, TipoGasto } from "../interfaces/tipoGasto";
 import type { Gasto } from "../interfaces/gasto";
@@ -39,6 +39,7 @@ export default function GastoFormModal({
   const { mostrarToast } = useToast();
 
   const esEdicion = Boolean(gastoEditar);
+  const idBase = useId(); // para unir cada etiqueta con su campo
 
   const [clase, setClase] = useState<ClaseTipoGasto | "">("");
   const [idTipo, setIdTipo] = useState<string>("");
@@ -173,9 +174,10 @@ export default function GastoFormModal({
     >
       <form id="gasto-form" onSubmit={handleSubmit}>
         <div className="form-field">
-          <label>Categoría</label>
+          <label htmlFor={`${idBase}-clase`}>Categoría</label>
           <div className="select-wrap">
             <select
+              id={`${idBase}-clase`}
               value={clase}
               onChange={(e) => {
                 setClase(e.target.value as ClaseTipoGasto);
@@ -193,8 +195,9 @@ export default function GastoFormModal({
         </div>
 
         <div className="form-field">
-          <label>Fecha y hora de vencimiento</label>
+          <label htmlFor={`${idBase}-fecha`}>Fecha y hora de vencimiento</label>
           <input
+            id={`${idBase}-fecha`}
             type="datetime-local"
             value={fecha}
             onChange={(e) => setFecha(e.target.value)}
@@ -202,8 +205,9 @@ export default function GastoFormModal({
         </div>
 
         <div className="form-field">
-          <label>Precio</label>
+          <label htmlFor={`${idBase}-precio`}>Precio</label>
           <input
+            id={`${idBase}-precio`}
             type="number"
             min="0"
             step="0.01"
@@ -214,9 +218,9 @@ export default function GastoFormModal({
         </div>
 
         <div className="form-field">
-          <label>Detalle del gasto</label>
+          <label htmlFor={`${idBase}-detalle`}>Detalle del gasto</label>
           <div className="select-wrap">
-            <select value={idTipo} onChange={(e) => setIdTipo(e.target.value)}>
+            <select id={`${idBase}-detalle`} value={idTipo} onChange={(e) => setIdTipo(e.target.value)}>
               <option value="">Detalle</option>
               {detallesFiltrados.map((c) => (
                 <option key={c.id_tipo} value={c.id_tipo}>
@@ -230,6 +234,7 @@ export default function GastoFormModal({
             <input
               type="text"
               style={{ marginTop: 8 }}
+              aria-label="Nombre del nuevo detalle"
               placeholder="Nombre del nuevo detalle"
               value={detalleNuevo}
               onChange={(e) => setDetalleNuevo(e.target.value)}
@@ -238,7 +243,7 @@ export default function GastoFormModal({
         </div>
 
         {error && (
-          <p className="field-error" style={{ display: "block" }}>
+          <p className="field-error" role="alert" style={{ display: "block" }}>
             {error}
           </p>
         )}
