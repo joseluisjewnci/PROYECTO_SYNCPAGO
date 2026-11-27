@@ -7,27 +7,9 @@
   .form-row         { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 768px) {
-
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-  .sidebar.open { transform: translateX(0); }
-
-  .main-wrap { margin-left: 0; }
-
-  .topbar { padding: 0 16px; }
-
-  .search-bar { display: none; }
-
-  .content { padding: 16px; }
-
-  /* La columna Acciones se oculta solo en las tablas que no son de Gastos (Gastos pasa a tarjetas, más abajo) */
-  .data-table:not(.tabla-gastos) th:nth-child(5),
-  .data-table:not(.tabla-gastos) td:nth-child(5) { display: none; }
-
-  /* Gastos en celular: cada gasto es una tarjeta con precio, vencimiento, estado y botones */
+@media (max-width: 900px) {
+  /* Gastos en pantallas pequeñas y tabletas (hasta 900 px): cada gasto es una tarjeta con precio, vencimiento, estado y botones.
+     Antes de 810 px la tabla no cabe junto al menú lateral y dejaba la columna Acciones cortada. */
   .tabla-gastos { background: transparent; box-shadow: none; border-radius: 0; }
   .tabla-gastos,
   .tabla-gastos tbody { display: block; width: 100%; }
@@ -77,8 +59,34 @@
     border-radius: var(--radius-sm);
   }
   .tabla-gastos .action-label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--gray-600); }
+}
+
+@media (max-width: 768px) {
+
+  /* Menú cerrado: además de salirse de la pantalla, queda oculto para que Tab no entre en él */
+  .sidebar {
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
+  }
+  .sidebar.open { transform: translateX(0); visibility: visible; transition: transform 0.3s ease, visibility 0s; }
+
+  .main-wrap { margin-left: 0; }
+
+  .topbar { padding: 0 16px; }
+
+  .search-bar { display: none; }
+
+  .content { padding: 16px; }
+
+  /* La columna Acciones se oculta solo en las tablas que no son de Gastos (Gastos pasa a tarjetas desde los 900 px, más arriba) */
+  .data-table:not(.tabla-gastos) th:nth-child(5),
+  .data-table:not(.tabla-gastos) td:nth-child(5) { display: none; }
 
   .modal { margin: 16px; max-width: calc(100% - 32px); }
+
+  /* Controles táctiles de al menos 44 px */
+  .filter-btn, .btn-nuevo-gasto, .page-btn { min-height: 44px; }
 
   .tabs { overflow-x: auto; }
   .tab  { white-space: nowrap; flex-shrink: 0; }
