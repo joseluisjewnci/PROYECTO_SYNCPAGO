@@ -51,7 +51,8 @@ try:
     except Exception: # CREADA - RETENCION
         print("FALTAN COLUMNAS DE INACTIVIDAD: ejecuta Database/12_INACTIVIDAD_Y_PURGA.sql en PostgreSQL (haz pg_dump antes). Sin ellas el inicio de sesión falla.") # CREADA - RETENCION
 except Exception as error:
-    print(f"Error de conexión: {error}")
+    print(f"Error de conexión con PostgreSQL: {error}")
+    raise
 
 app = FastAPI(
     title="API Control de Gastos (SYNCPAGO)",
