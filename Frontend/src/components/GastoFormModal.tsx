@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useMemo, useState } from "react";
 import Modal from "./Modal";
+import CampoDinero from "./CampoDinero";
 import type { ClaseTipoGasto, TipoGasto } from "../interfaces/tipoGasto";
 import type { Gasto } from "../interfaces/gasto";
 import { tipoGastoService } from "../services/tipoGastoService";
@@ -206,15 +207,7 @@ export default function GastoFormModal({
 
         <div className="form-field">
           <label htmlFor={`${idBase}-precio`}>Precio</label>
-          <input
-            id={`${idBase}-precio`}
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Valor"
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
-          />
+          <CampoDinero id={`${idBase}-precio`} placeholder="Valor" value={precio} onChange={setPrecio} />
         </div>
 
         <div className="form-field">

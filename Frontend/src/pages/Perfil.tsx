@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useToast } from "../hooks/useToast";
 import { usuariosService } from "../services/usuariosService";
 import { guardarToken } from "../services/sesion";
+import CampoContrasena from "../components/CampoContrasena";
 
 // Mi perfil: aquí el usuario cambia su contraseña.
 export default function Perfil() {
@@ -56,16 +57,16 @@ export default function Perfil() {
         <form className="perfil-form" onSubmit={cambiarContrasena}>
           <div className="form-field">
             <label>Contraseña actual</label>
-            <input type="password" autoComplete="current-password" value={actual} onChange={(e) => setActual(e.target.value)} />
+            <CampoContrasena autoComplete="current-password" value={actual} onChange={(e) => setActual(e.target.value)} />
           </div>
           <div className="form-field">
             <label>Contraseña nueva</label>
-            <input type="password" autoComplete="new-password" value={nueva} onChange={(e) => setNueva(e.target.value)} />
+            <CampoContrasena autoComplete="new-password" value={nueva} onChange={(e) => setNueva(e.target.value)} />
             <p className="perfil-ayuda">Mínimo 8 caracteres, con una mayúscula y un número.</p>
           </div>
           <div className="form-field">
             <label>Confirmar contraseña nueva</label>
-            <input type="password" autoComplete="new-password" value={confirmar} onChange={(e) => setConfirmar(e.target.value)} />
+            <CampoContrasena autoComplete="new-password" value={confirmar} onChange={(e) => setConfirmar(e.target.value)} />
           </div>
           {error && <p className="perfil-error">{error}</p>}
           <button type="submit" className="btn-save" disabled={guardandoClave}>

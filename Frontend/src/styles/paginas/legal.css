@@ -57,7 +57,6 @@
 .legal-nota p { margin: 0; }
 
 /* Datos que el responsable debe completar antes de publicar */
-.legal-pendiente { background: #fff1c2; color: var(--gray-900); padding: 1px 5px; border-radius: 4px; font-weight: 700; }
 
 .legal-pie { max-width: 1080px; margin: 0 auto; padding: 8px 20px 36px; text-align: center; }
 .legal-pie nav { display: flex; justify-content: center; gap: 8px 22px; flex-wrap: wrap; }

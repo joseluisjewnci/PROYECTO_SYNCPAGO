@@ -575,3 +575,18 @@
 
 /* Texto bajo el icono de cada acción: solo se muestra en celular (ver responsive.css) */
 .action-label { display: none; }
+
+/* Campo de contraseña con ojo para ver u ocultar lo escrito */
+.pass-wrap { position: relative; width: 100%; }
+.pass-wrap .pass-input { width: 100%; padding-right: 44px; }
+.field-group .pass-wrap .pass-input { padding-right: 44px; }
+.pass-ojo {
+  position: absolute;
+  right: 4px; top: 0;
+  height: 40px; width: 40px; /* mismo alto que el campo, para que no se mueva si sale un mensaje de error */
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: var(--radius-sm);
+  color: var(--gray-500); cursor: pointer;
+}
+.pass-ojo:hover { color: var(--gray-700); }
+.pass-ojo:focus-visible { outline: 2px solid var(--blue-mid); outline-offset: -2px; }
