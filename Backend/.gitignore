@@ -1,19 +1,37 @@
-# Entorno virtual
+# Entornos virtuales
 .venv/
 venv/
 env/
 
-# Variables de entorno
+# Variables de entorno y credenciales
 .env
+.env.*
+!.env.example
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Base de datos / archivos locales
+# Caché y resultados de pruebas
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Bases de datos y copias de seguridad
 *.sqlite3
 *.db
+*.dump
+*.dump.enc
+
+# Dependencias y registros
+node_modules/
+*.log
+
+# Claves y archivos de cifrado age
+*.agekey
+age-identity.txt
+age-recipient.txt
 
 # IDE
 .vscode/
@@ -22,6 +40,3 @@ __pycache__/
 # Sistema operativo
 .DS_Store
 Thumbs.db
-.env
-*.dump
-*.dump.enc
