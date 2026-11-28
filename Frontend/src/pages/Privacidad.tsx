@@ -19,18 +19,9 @@ const SECCIONES: SeccionLegal[] = [
   { id: "contacto", titulo: "Contacto" },
 ];
 
-const PENDIENTE = (texto: string) => <mark className="legal-pendiente">[{texto}]</mark>;
-
 export default function Privacidad() {
   return (
-    <LegalLayout titulo="Política de privacidad" actualizado="25 de noviembre de 2026" secciones={SECCIONES}>
-      <div className="legal-aviso">
-        <p>
-          Los datos marcados como {PENDIENTE("PENDIENTE")} los debe completar el responsable de SYNCPAGO antes de dar
-          este documento por definitivo.
-        </p>
-      </div>
-
+    <LegalLayout titulo="Política de privacidad" actualizado="27 de noviembre de 2026" secciones={SECCIONES}>
       <section id="quienes-somos">
         <h2>1. Quiénes somos y para qué sirve SYNCPAGO</h2>
         <p>
@@ -39,8 +30,11 @@ export default function Privacidad() {
           plataforma de pagos: la aplicación no procesa pagos ni mueve dinero.
         </p>
         <p>
-          El responsable del tratamiento de los datos personales es {PENDIENTE("NOMBRE DEL RESPONSABLE")}, ubicado en
-          Colombia. Para cualquier consulta escribe a {PENDIENTE("CORREO DE CONTACTO")}.
+          SYNCPAGO fue desarrollado como proyecto académico en Bogotá D.C., Colombia, por José Castillo, Mariana Castellanos y Sofía Martín.
+        </p>
+        <p>
+          Los responsables del tratamiento de los datos personales son José Castillo, Mariana Castellanos y Sofía Martín, conjuntamente. Para cualquier consulta
+          escribe a <a href="mailto:syncpago@gmail.com">syncpago@gmail.com</a>.
         </p>
       </section>
 
@@ -71,6 +65,10 @@ export default function Privacidad() {
             involucrado, la dirección IP desde la que se hizo y una nota corta.
           </li>
           <li>Este registro no guarda contraseñas, códigos de verificación ni tokens.</li>
+          <li>
+            La fecha de tu último inicio de sesión y, si tu cuenta llega a estar inactiva, la fecha en que te enviamos
+            el aviso de inactividad (ver el punto 9).
+          </li>
           <li>Tu navegador guarda en su almacenamiento local la sesión iniciada, para que no tengas que entrar en cada visita.</li>
         </ul>
         <h3>2.4 Datos de Telegram (opcional)</h3>
@@ -93,6 +91,7 @@ export default function Privacidad() {
           <li>Enviarte por correo los códigos de verificación del registro y de la recuperación de contraseña.</li>
           <li>Enviarte recordatorios por los medios que actives: Telegram y Google Calendar.</li>
           <li>Proteger tu cuenta y detectar usos indebidos, como intentos repetidos de entrar.</li>
+          <li>Avisarte por correo si tu cuenta lleva mucho tiempo sin usarse y eliminarla si no vuelves a entrar (punto 9).</li>
           <li>Atender tus consultas y solicitudes sobre tus datos.</li>
         </ul>
         <p>No vendemos tus datos ni los usamos para publicidad.</p>
@@ -101,7 +100,7 @@ export default function Privacidad() {
       <section id="proteccion">
         <h2>4. Almacenamiento y protección</h2>
         <p>
-          Tus datos se guardan en una base de datos PostgreSQL. Estas son las medidas que la aplicación aplica
+          Tus datos se guardan en una base de datos PostgreSQL alojada en Supabase, en la región West US (Oregon, Estados Unidos). Estas son las medidas que la aplicación aplica
           actualmente:
         </p>
         <ul>
@@ -128,10 +127,19 @@ export default function Privacidad() {
         <h2>5. Servicios externos que usamos</h2>
         <p>Para funcionar, SYNCPAGO se apoya en estos servicios de terceros:</p>
         <ul>
-          <li>Render, para alojar la aplicación web (frontend).</li>
-          <li>{PENDIENTE("PROVEEDOR DE ALOJAMIENTO DEL BACKEND")}, para alojar el servidor de la aplicación.</li>
-          <li>{PENDIENTE("PROVEEDOR DE BASE DE DATOS")}, donde se almacena la base de datos.</li>
-          <li>{PENDIENTE("PROVEEDOR DE CORREO")}, para enviar los códigos de verificación por correo.</li>
+          <li>
+            Render, para alojar la aplicación web (frontend) y el servidor de la aplicación (backend). El servidor
+            está en la región de Oregon, Estados Unidos.
+          </li>
+          <li>
+            Supabase, donde se almacena la base de datos (PostgreSQL), en infraestructura de AWS en la región West US
+            (Oregon, Estados Unidos).
+          </li>
+          <li>
+            Brevo, para enviar por correo, a través de su API, los códigos de verificación y de recuperación. Brevo
+            recibe tu correo electrónico y el contenido del mensaje (el código o, si tu cuenta queda inactiva, el aviso
+            de inactividad).
+          </li>
           <li>Telegram, solo si vinculas tu cuenta, para enviarte recordatorios.</li>
           <li>Google Calendar, solo si lo conectas, para crear tus eventos de vencimiento.</li>
           <li>
@@ -139,6 +147,11 @@ export default function Privacidad() {
             de tu navegador.
           </li>
         </ul>
+        <p>
+          Por lo anterior, tus datos se almacenan y procesan fuera de Colombia: el servidor y la base de datos están en
+          Estados Unidos (Oregon). El proveedor de correo (Brevo) también procesa tu correo electrónico fuera de
+          nuestros servidores y puede hacerlo fuera de Colombia.
+        </p>
       </section>
 
       <section id="google-calendar">
@@ -209,22 +222,45 @@ export default function Privacidad() {
 
       <section id="conservacion">
         <h2>9. Conservación y eliminación</h2>
+        <h3>9.1 Cuentas inactivas</h3>
         <ul>
-          <li>Conservamos tus datos mientras tu cuenta esté activa.</li>
+          <li>Conservamos tus datos mientras uses tu cuenta.</li>
           <li>
-            Cuando pides la eliminación de tu cuenta, borramos tus datos personales y tus gastos, salvo lo que una
-            norma nos obligue a conservar.
+            Si pasan 90 días sin que inicies sesión, tu cuenta se considera inactiva y te enviamos un aviso al correo
+            con el que te registraste.
           </li>
           <li>
-            El registro de eventos de seguridad no se borra automáticamente. Plazo de conservación:{" "}
-            {PENDIENTE("DEFINIR PLAZO")}.
+            Desde ese aviso tienes 15 días más para volver a iniciar sesión. Si lo haces, la eliminación se cancela y
+            tu cuenta sigue como estaba.
           </li>
           <li>
-            Las copias de seguridad que existan podrían conservar tus datos por un tiempo limitado:{" "}
-            {PENDIENTE("DEFINIR PLAZO")}.
+            Si no inicias sesión en esos 15 días, eliminamos tu cuenta y tus datos personales: tus gastos, tipos de
+            gasto, recordatorios, historial, presupuesto, la vinculación con Telegram y la conexión con Google
+            Calendar (se borra el calendario «SYNCPAGO» y se revoca el permiso), salvo lo que una norma nos obligue a
+            conservar.
           </li>
+          <li>No eliminamos una cuenta por inactividad sin haberte enviado antes el aviso.</li>
         </ul>
-        <p>Por ahora la eliminación de la cuenta se solicita por correo (punto 11); la aplicación todavía no tiene un botón para hacerlo.</p>
+        <h3>9.2 Eliminación a solicitud tuya</h3>
+        <p>
+          También puedes pedir la eliminación de tu cuenta en cualquier momento por correo (punto 11): borramos tus
+          datos personales y tus gastos, salvo lo que una norma nos obligue a conservar. La aplicación todavía no tiene
+          un botón para hacerlo.
+        </p>
+        <h3>9.3 Registro de eventos de seguridad</h3>
+        <p>
+          Los eventos de seguridad se conservan 90 días desde su creación y después se eliminan automáticamente. Estos
+          eventos incluyen el correo y la dirección IP, por lo que, si tu cuenta se elimina, los eventos anteriores
+          pueden permanecer hasta cumplirse esos 90 días. El evento que registra la eliminación de una cuenta por
+          inactividad no incluye tu correo.
+        </p>
+        <h3>9.4 Copias de seguridad</h3>
+        <p>
+          El equipo hace una copia manual de la base de datos una vez por semana y conserva únicamente las últimas
+          cuatro, con acceso restringido al equipo. Por eso, los datos que eliminemos pueden seguir en esas copias
+          hasta que sean reemplazadas, es decir, durante unas cuatro semanas como máximo. Esas copias no se usan para
+          otra finalidad y, si algún día hubiera que restaurar una, se volverían a eliminar las cuentas ya borradas.
+        </p>
       </section>
 
       <section id="derechos">
@@ -246,7 +282,7 @@ export default function Privacidad() {
       <section id="solicitudes">
         <h2>11. Cómo hacer una solicitud o pedir la eliminación</h2>
         <ol>
-          <li>Escribe a {PENDIENTE("CORREO DE CONTACTO")} desde el correo con el que te registraste.</li>
+          <li>Escribe a <a href="mailto:syncpago@gmail.com">syncpago@gmail.com</a> desde el correo con el que te registraste.</li>
           <li>Indica en el asunto qué necesitas: consulta, actualización, reclamo o eliminación de cuenta y datos.</li>
           <li>Incluye tu nombre y el correo de tu cuenta. Podemos pedirte datos para confirmar que eres el titular.</li>
         </ol>
@@ -272,9 +308,11 @@ export default function Privacidad() {
       <section id="contacto">
         <h2>14. Contacto</h2>
         <p>
-          Responsable: {PENDIENTE("NOMBRE DEL RESPONSABLE")}
+          Equipo desarrollador: José Castillo, Mariana Castellanos y Sofía Martín (Bogotá D.C., Colombia)
           <br />
-          Correo para consultas de privacidad: {PENDIENTE("CORREO DE CONTACTO")}
+          Responsables del tratamiento: José Castillo, Mariana Castellanos y Sofía Martín, conjuntamente
+          <br />
+          Correo para consultas de privacidad: <a href="mailto:syncpago@gmail.com">syncpago@gmail.com</a>
         </p>
       </section>
     </LegalLayout>

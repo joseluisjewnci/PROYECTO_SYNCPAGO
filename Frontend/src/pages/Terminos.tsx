@@ -21,18 +21,9 @@ const SECCIONES: SeccionLegal[] = [
   { id: "contacto", titulo: "Contacto" },
 ];
 
-const PENDIENTE = (texto: string) => <mark className="legal-pendiente">[{texto}]</mark>;
-
 export default function Terminos() {
   return (
-    <LegalLayout titulo="Condiciones del servicio" actualizado="25 de noviembre de 2026" secciones={SECCIONES}>
-      <div className="legal-aviso">
-        <p>
-          Los datos marcados como {PENDIENTE("PENDIENTE")} los debe completar el responsable de SYNCPAGO antes de dar
-          este documento por definitivo.
-        </p>
-      </div>
-
+    <LegalLayout titulo="Condiciones del servicio" actualizado="27 de noviembre de 2026" secciones={SECCIONES}>
       <section id="descripcion">
         <h2>1. Qué es SYNCPAGO</h2>
         <p>
@@ -159,7 +150,8 @@ export default function Terminos() {
       <section id="propiedad">
         <h2>11. Propiedad intelectual</h2>
         <p>
-          El nombre SYNCPAGO, el diseño y el código de la aplicación pertenecen a {PENDIENTE("TITULAR DE LOS DERECHOS")}.
+          El nombre SYNCPAGO, el diseño y el código de la aplicación fueron desarrollados como proyecto académico por
+          José Castillo, Mariana Castellanos y Sofía Martín, quienes son titulares conjuntos de los derechos de autor.
           Estas condiciones no te transfieren ningún derecho sobre ellos, salvo el de usar la aplicación según lo aquí
           descrito. La información de tus gastos sigue siendo tuya.
         </p>
@@ -170,6 +162,11 @@ export default function Terminos() {
         <ul>
           <li>Puedes dejar de usar SYNCPAGO y pedir la eliminación de tu cuenta en cualquier momento (ver la Política de privacidad).</li>
           <li>Podemos suspender o cerrar una cuenta que incumpla estas condiciones o ponga en riesgo la seguridad del servicio.</li>
+          <li>
+            Cuentas inactivas: si pasan 90 días sin que inicies sesión, te enviaremos un aviso a tu correo y tendrás 15
+            días más para volver a entrar. Si inicias sesión en ese plazo, tu cuenta se conserva; si no, la cuenta y sus
+            datos se eliminan automáticamente (ver la Política de privacidad).
+          </li>
           <li>Si el servicio se termina, intentaremos avisar con anticipación razonable.</li>
         </ul>
       </section>
@@ -186,18 +183,18 @@ export default function Terminos() {
       <section id="legislacion">
         <h2>14. Legislación aplicable</h2>
         <p>
-          Estas condiciones se rigen por las leyes de la República de Colombia. Cualquier diferencia se intentará
-          resolver primero de manera directa y, si no es posible, ante los jueces competentes de{" "}
-          {PENDIENTE("CIUDAD O JURISDICCIÓN")}.
+          Estas condiciones se rigen por las leyes de la República de Colombia, incluida la Ley 1581 de 2012 sobre
+          protección de datos personales. Cualquier diferencia se intentará resolver primero de manera directa y, si
+          no es posible, ante los jueces competentes de Bogotá D.C., Colombia.
         </p>
       </section>
 
       <section id="contacto">
         <h2>15. Contacto</h2>
         <p>
-          Responsable: {PENDIENTE("NOMBRE DEL RESPONSABLE")}
+          Equipo desarrollador: José Castillo, Mariana Castellanos y Sofía Martín (Bogotá D.C., Colombia)
           <br />
-          Correo: {PENDIENTE("CORREO DE CONTACTO")}
+          Correo: <a href="mailto:syncpago@gmail.com">syncpago@gmail.com</a>
         </p>
       </section>
     </LegalLayout>
