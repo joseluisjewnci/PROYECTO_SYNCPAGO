@@ -81,6 +81,7 @@
   font-size: 0.85rem;
   color: var(--gray-400);
   pointer-events: none;
+  z-index: 1; /* por encima del campo de contraseña (que va dentro de un contenedor) */
 }
 .field-group input {
   width: 100%;
