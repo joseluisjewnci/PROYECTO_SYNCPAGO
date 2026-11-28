@@ -10,6 +10,7 @@ import type { TipoGasto, ClaseTipoGasto } from "../interfaces/tipoGasto";
 import { formatMoney, formatDateTime, asignarColores, MESES } from "../utils/format";
 import { CLASES_LABEL, claveMes } from "../utils/estadisticas";
 import EvolucionGastos from "../components/EvolucionGastos";
+import CampoDinero from "../components/CampoDinero";
 import ResumenMeses from "../components/ResumenMeses";
 import PieChart from "../components/charts/PieChart";
 
@@ -208,13 +209,7 @@ export default function Estadisticas() {
               <label>Dinero disponible ese mes</label>
               <div className="presupuesto-input-wrap">
                 <span className="presupuesto-prefix">$</span>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  value={entradaDinero}
-                  onChange={(e) => setEntradaDinero(e.target.value)}
-                />
+                <CampoDinero placeholder="0" value={entradaDinero} onChange={setEntradaDinero} />
               </div>
             </div>
             <div className="form-field">
@@ -222,13 +217,7 @@ export default function Estadisticas() {
               <div className="presupuesto-input-row">
                 <div className="presupuesto-input-wrap">
                   <span className="presupuesto-prefix">$</span>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    value={presupuestoGastos}
-                    onChange={(e) => setPresupuestoGastos(e.target.value)}
-                  />
+                  <CampoDinero placeholder="0" value={presupuestoGastos} onChange={setPresupuestoGastos} />
                 </div>
                 <button className="btn-guardar-presupuesto" type="submit" disabled={guardando}>
                   {guardando ? "Guardando..." : "Guardar"}

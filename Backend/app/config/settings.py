@@ -94,3 +94,19 @@ GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://127.0.0.1:8000/ap
 GOOGLE_ACTIVO = bool(GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET)
 # Clave para cifrar el refresh token de Google en la BD. Si no se define, se deriva de SECRET_KEY.
 CLAVE_CIFRADO = os.getenv("CLAVE_CIFRADO", "")
+
+# =========================================================
+# INACTIVIDAD DE CUENTAS, EVENTOS DE SEGURIDAD Y MANTENIMIENTO AUTOMÁTICO # CREADA - RETENCION
+# =========================================================
+# Días sin iniciar sesión para considerar inactiva una cuenta (se le envía un aviso al correo registrado) # CREADA - RETENCION
+INACTIVIDAD_DIAS = int(os.getenv("INACTIVIDAD_DIAS", "90")) # CREADA - RETENCION
+# Días adicionales, contados desde el aviso, para volver a iniciar sesión antes de eliminar la cuenta # CREADA - RETENCION
+INACTIVIDAD_GRACIA_DIAS = int(os.getenv("INACTIVIDAD_GRACIA_DIAS", "15")) # CREADA - RETENCION
+# Días que se conservan los eventos de seguridad desde su creación # CREADA - RETENCION
+EVENTOS_RETENCION_DIAS = int(os.getenv("EVENTOS_RETENCION_DIAS", "90")) # CREADA - RETENCION
+# true = el mantenimiento solo cuenta y escribe en la consola: NO envía avisos, NO elimina nada # CREADA - RETENCION
+MANTENIMIENTO_SIMULACION = os.getenv("MANTENIMIENTO_SIMULACION", "false").strip().lower() == "true" # CREADA - RETENCION
+# Máximo de cuentas que se avisan o eliminan en cada ejecución (freno de seguridad) # CREADA - RETENCION
+MANTENIMIENTO_LOTE = int(os.getenv("MANTENIMIENTO_LOTE", "50")) # CREADA - RETENCION
+if INACTIVIDAD_DIAS < 1 or INACTIVIDAD_GRACIA_DIAS < 1 or EVENTOS_RETENCION_DIAS < 1 or MANTENIMIENTO_LOTE < 1: # CREADA - RETENCION
+    raise ValueError("INACTIVIDAD_DIAS, INACTIVIDAD_GRACIA_DIAS, EVENTOS_RETENCION_DIAS y MANTENIMIENTO_LOTE deben ser mayores que 0") # CREADA - RETENCION

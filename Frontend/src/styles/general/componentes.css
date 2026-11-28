@@ -211,11 +211,14 @@
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  visibility: hidden; /* cerrado: sus campos no reciben el foco con Tab */
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
 }
 .modal-overlay.open {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0s;
 }
 
 .modal {
@@ -231,6 +234,7 @@
   overflow-y: auto;
 }
 .modal-overlay.open .modal { transform: scale(1); }
+.modal:focus-visible { outline: none; } /* el foco entra al diálogo por código; no necesita recuadro */
 
 .modal-header {
   background: var(--blue-mid);
@@ -249,7 +253,10 @@
   font-weight: 800;
   font-size: 1.05rem;
 }
-.modal-back   { color: var(--white); font-size: 1.1rem; }
+/* Flecha de regreso: botón de 44 px para el dedo; los márgenes negativos evitan que agrande la cabecera */
+.modal-back   { color: var(--white); font-size: 1.1rem; min-width: 44px; min-height: 44px; margin: -10px 0 -10px -12px; border-radius: var(--radius-sm); }
+.modal-back:hover { background: rgba(255,255,255,0.15); }
+.modal-back:focus-visible { outline-color: var(--white); }
 .modal-body   { padding: 24px 20px; }
 .modal-footer { padding: 0 20px 20px; display: flex; gap: 10px; }
 
@@ -325,7 +332,7 @@
 .btn-confirm {
   flex: 1;
   padding: 12px;
-  background: var(--green);
+  background: var(--green-btn);
   color: var(--white);
   border-radius: var(--radius-sm);
   font-family: var(--font-display);
@@ -333,7 +340,7 @@
   font-size: 0.95rem;
   transition: background 0.2s;
 }
-.btn-confirm:hover { background: var(--green-dark); }
+.btn-confirm:hover { background: var(--green-btn-hover); }
 .btn-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-save {
@@ -551,3 +558,35 @@
   .carga-marca  { font-size: 1.45rem; }
   .carga-titulo { font-size: 1.2rem; }
 }
+
+/* Botón para registrar un gasto, siempre visible en la página Mis Gastos (también en celular) */
+.btn-nuevo-gasto {
+  padding: 10px 18px;
+  background: var(--green-btn);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow);
+  transition: background 0.15s;
+}
+.btn-nuevo-gasto:hover { background: var(--green-btn-hover); }
+
+/* Texto bajo el icono de cada acción: solo se muestra en celular (ver responsive.css) */
+.action-label { display: none; }
+
+/* Campo de contraseña con ojo para ver u ocultar lo escrito */
+.pass-wrap { position: relative; width: 100%; }
+.pass-wrap .pass-input { width: 100%; padding-right: 44px; }
+.field-group .pass-wrap .pass-input { padding-right: 44px; }
+.pass-ojo {
+  position: absolute;
+  right: 4px; top: 0;
+  height: 40px; width: 40px; /* mismo alto que el campo, para que no se mueva si sale un mensaje de error */
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0; border-radius: var(--radius-sm);
+  color: var(--gray-500); cursor: pointer;
+}
+.pass-ojo:hover { color: var(--gray-700); }
+.pass-ojo:focus-visible { outline: 2px solid var(--blue-mid); outline-offset: -2px; }

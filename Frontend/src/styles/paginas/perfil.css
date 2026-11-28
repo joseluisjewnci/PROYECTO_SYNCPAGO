@@ -4,3 +4,6 @@
 .perfil-error { font-size: 0.82rem; color: var(--red); margin: 8px 0; }
 .perfil-form .btn-save { width: 100%; }
 .perfil-form .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Un correo largo se parte en varias líneas en vez de salirse de la tarjeta */
+.perm-card p { overflow-wrap: anywhere; }

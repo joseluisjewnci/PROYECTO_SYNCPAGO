@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usuariosService } from "../services/usuariosService";
 import type { RegistroIniciado } from "../interfaces/usuario";
+import CampoContrasena from "../components/CampoContrasena";
 import PantallaCarga from "../components/PantallaCarga";
 import { esperar } from "../utils/pantallaCarga";
 
@@ -190,8 +191,7 @@ export default function Register() {
             </div>
             <div className="field-group">
               <span className="icon">🔒</span>
-              <input
-                type="password"
+              <CampoContrasena
                 placeholder="Contraseña"
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
@@ -199,8 +199,7 @@ export default function Register() {
             </div>
             <div className={`field-group${error ? " error" : ""}`}>
               <span className="icon">🔒</span>
-              <input
-                type="password"
+              <CampoContrasena
                 placeholder="Confirmar contraseña"
                 value={confirmar}
                 onChange={(e) => setConfirmar(e.target.value)}
@@ -214,6 +213,9 @@ export default function Register() {
         </div>
         <p className="auth-link">
           ¿Ya tienes cuenta? <Link to="/">Inicia sesión</Link>
+        </p>
+        <p className="auth-legal">
+          Al registrarte aceptas las <Link to="/terminos">Condiciones del servicio</Link> y la <Link to="/privacidad">Política de privacidad</Link>.
         </p>
       </div>
     </div>

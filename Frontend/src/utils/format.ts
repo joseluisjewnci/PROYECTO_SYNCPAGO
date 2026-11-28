@@ -6,6 +6,25 @@ export function formatMoney(value: number): string {
   }).format(value || 0);
 }
 
+// Texto que escribe la persona (ej. "1.250.000,5") -> valor plano para el servidor ("1250000.5").
+// Solo deja dígitos y la primera coma (decimal, máximo 2 decimales); los puntos son separadores de miles y se ignoran.
+export function dineroAPlano(texto: string): string {
+  const limpio = texto.replace(/[^0-9,]/g, "");
+  const i = limpio.indexOf(",");
+  const entero = (i === -1 ? limpio : limpio.slice(0, i)).replace(/^0+(?=\d)/, "");
+  if (i === -1) return entero;
+  const decimales = limpio.slice(i + 1).replace(/,/g, "").slice(0, 2);
+  return (entero || "0") + "." + decimales;
+}
+
+// Valor plano ("1250000.5") -> texto para mostrar ("1.250.000,5")
+export function dineroFormateado(plano: string): string {
+  if (!plano) return "";
+  const [entero, decimales] = plano.split(".");
+  const miles = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return decimales === undefined ? miles : miles + "," + decimales;
+}
+
 export function minutosAHoras(minutos: number): string {
   if (minutos < 60) return `${minutos} min`;
   const horas = Math.floor(minutos / 60);

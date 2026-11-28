@@ -5,6 +5,8 @@
   --blue-mid:   #3563e9;
   --green:      #22c55e;
   --green-dark: #16a34a;
+  --green-btn:  #15803d; /* verde de botones con texto blanco (contraste 5:1) */
+  --green-btn-hover: #166534;
   --red:        #ef4444;
   --yellow:     #eab308;
   --cyan:       #06b6d4;
@@ -57,5 +59,14 @@ input, select, textarea {
   font-family: var(--font-body);
   outline: none;
 }
+
+/* Indicador de foco para quien navega con teclado (no aparece al hacer clic con el mouse) */
+:focus-visible {
+  outline: 2px solid var(--blue-mid);
+  outline-offset: 2px;
+}
+.sidebar :focus-visible,
+.topbar :focus-visible { outline-color: var(--white); }
+.auth-link a:focus-visible { outline-color: var(--white); }
 
 .hidden { display: none !important; }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import CampoContrasena from "../components/CampoContrasena";
 import PantallaCarga from "../components/PantallaCarga";
 import { esperar } from "../utils/pantallaCarga";
 
@@ -60,8 +61,7 @@ export default function Login() {
             </div>
             <div className={`field-group${error ? " error" : ""}`}>
               <span className="icon">🔒</span>
-              <input
-                type="password"
+              <CampoContrasena
                 placeholder="Contraseña"
                 value={contrasena}
                 onChange={(e) => setContrasena(e.target.value)}
@@ -78,6 +78,9 @@ export default function Login() {
         </div>
         <p className="auth-link">
           ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
+        </p>
+        <p className="auth-legal">
+          <Link to="/privacidad">Política de privacidad</Link> · <Link to="/terminos">Condiciones del servicio</Link>
         </p>
       </div>
     </div>

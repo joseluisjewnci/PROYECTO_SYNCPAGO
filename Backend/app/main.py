@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta  # CREADA - RETENCION
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
@@ -16,6 +17,7 @@ from app.routes.seguridad_routes import router as seguridad_router
 from app.utils.auditoria import ip_cliente
 from app.controllers.gasto_controller import marcar_gastos_vencidos
 from app.controllers.notificacion_controller import enviar_recordatorios_telegram
+from app.controllers.mantenimiento_controller import ejecutar_mantenimiento  # CREADA - RETENCION
 from app.utils.telegram_bot import iniciar_bot_telegram
 from app.config.settings import ENTORNO, CORS_ORIGINS, CREAR_TABLAS, IP_DESDE_PROXY, TELEGRAM_ACTIVO
 
@@ -42,6 +44,12 @@ try:
             connection.execute(text("SELECT id_evento, id_usuario, correo, tipo, exito, detalle, ip, fecha FROM eventos_seguridad LIMIT 0"))
     except Exception:
         print("FALTA LA TABLA DE AUDITORÍA: ejecuta Database/11_AUDITORIA_EVENTOS.sql en PostgreSQL (haz pg_dump antes). Mientras tanto la app funciona, pero no guarda eventos de seguridad.")
+    # Verificación de solo lectura: ¿ya se ejecutó Database/12_INACTIVIDAD_Y_PURGA.sql? # CREADA - RETENCION
+    try: # CREADA - RETENCION
+        with engine.connect() as connection: # CREADA - RETENCION
+            connection.execute(text("SELECT ultimo_login, aviso_inactividad_enviado FROM usuarios LIMIT 0")) # CREADA - RETENCION
+    except Exception: # CREADA - RETENCION
+        print("FALTAN COLUMNAS DE INACTIVIDAD: ejecuta Database/12_INACTIVIDAD_Y_PURGA.sql en PostgreSQL (haz pg_dump antes). Sin ellas el inicio de sesión falla.") # CREADA - RETENCION
 except Exception as error:
     print(f"Error de conexión con PostgreSQL: {error}")
     raise
@@ -128,6 +136,15 @@ try:
         finally:
             db.close()
 
+    def tarea_mantenimiento():  # CREADA - RETENCION
+        db = SessionLocal()
+        try:
+            ejecutar_mantenimiento(db)
+        except Exception as error:
+            print("Error en la tarea de mantenimiento:", type(error).__name__)
+        finally:
+            db.close()
+
     scheduler = BackgroundScheduler()
     scheduler.add_job(
         tarea_marcar_vencidos,
@@ -137,6 +154,9 @@ try:
     )
     if TELEGRAM_ACTIVO:
         scheduler.add_job(tarea_recordatorios_telegram, "interval", minutes=1, max_instances=1, coalesce=True)
+    # Mantenimiento (avisos de inactividad, eliminación y purga de eventos). Es idempotente: cada 6 horas y 1 minuto después de arrancar, # CREADA - RETENCION
+    # así, si el servidor estuvo dormido, se recupera lo pendiente. # CREADA - RETENCION
+    scheduler.add_job(tarea_mantenimiento, "interval", hours=6, next_run_time=datetime.now() + timedelta(minutes=1), max_instances=1, coalesce=True, misfire_grace_time=3600)  # CREADA - RETENCION
     scheduler.start()
     print(f"Tarea programada activa: gastos vencidos cada {INTERVALO_MINUTOS} minutos")
 except ImportError:
