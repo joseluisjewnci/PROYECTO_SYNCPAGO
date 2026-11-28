@@ -368,8 +368,9 @@ def iniciar_sesion(db: Session, usuario: dict) -> dict:
     # Crea una sesión nueva: guarda el hash del sid (esto cierra cualquier sesión anterior del usuario),
     # reinicia el contador de intentos y entrega el token de acceso.
     sesion_id = generar_sesion_id()
+    # MODIFICADO - RETENCION: además registra el login (ultimo_login) y borra el aviso de inactividad, lo que cancela la eliminación
     db.execute(
-        text("UPDATE usuarios SET sesion_id = :sesion_hash, intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = :id_usuario;"),
+        text("UPDATE usuarios SET sesion_id = :sesion_hash, intentos_fallidos = 0, bloqueado_hasta = NULL, ultimo_login = LOCALTIMESTAMP, aviso_inactividad_enviado = NULL WHERE id_usuario = :id_usuario;"),
         {"sesion_hash": hash_sesion_id(sesion_id), "id_usuario": usuario["id_usuario"]},
     )
     db.commit()
