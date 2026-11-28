@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { usuariosService } from "../services/usuariosService";
+import CampoContrasena from "../components/CampoContrasena";
 
 // Recuperación de contraseña en 2 pasos con un código de 6 dígitos:
 //   1) el usuario escribe su correo y recibe el código;
@@ -100,8 +101,7 @@ export default function ForgotPassword() {
               </div>
               <div className="field-group">
                 <span className="icon">🔒</span>
-                <input
-                  type="password"
+                <CampoContrasena
                   placeholder="Contraseña nueva"
                   value={nueva}
                   onChange={(e) => setNueva(e.target.value)}
@@ -109,8 +109,7 @@ export default function ForgotPassword() {
               </div>
               <div className={`field-group${error ? " error" : ""}`}>
                 <span className="icon">🔒</span>
-                <input
-                  type="password"
+                <CampoContrasena
                   placeholder="Confirmar contraseña nueva"
                   value={confirmar}
                   onChange={(e) => setConfirmar(e.target.value)}
