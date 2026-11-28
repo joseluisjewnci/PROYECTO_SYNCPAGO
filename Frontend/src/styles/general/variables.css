@@ -5,8 +5,8 @@
   --blue-mid:   #3563e9;
   --green:      #22c55e;
   --green-dark: #16a34a;
-  --green-btn:  #15803d; /* verde de botones con texto blanco (contraste 5:1) */
-  --green-btn-hover: #166534;
+  --green-btn:  #22c55e; /* verde de botones con texto blanco (contraste 5:1) */
+  --green-btn-hover: #16a34a;
   --red:        #ef4444;
   --yellow:     #eab308;
   --cyan:       #06b6d4;
